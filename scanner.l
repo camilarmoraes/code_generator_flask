@@ -1,34 +1,37 @@
 %{
 #include "parser.tab.h"
+char *stringpools(char *);
 %}
 %option yylineno
 
 DIGIT    [0-9]
-ID       [a-z][a-z0-9]*
+ID       [_a-zA-Z][_A-Za-z0-9]*
 
 %%
 
-":="     { printf("Atribuição "); return(ASSGNOP);  }
-{DIGIT}+ { printf("NUMERO");return(NUMBER);   }
-[-+]?{DIGIT}*"."{DIGIT}+ { printf("Real");return(NUMBER);   }
-do       { printf("do "); return(DO);       }
-else     { printf("else "); return(ELSE);     }
-end      { return(END);      }
-fi       { return(FI);       }
-if       { return(IF);       }
-in       { return(IN);       }
-integer  { printf("tipo "); return(INTEGER);  }
-let      { printf("let "); return(LET);      }
-read     { return(READ);     }
-skip     { return(SKIP);     }
-then     { return(THEN);     }
-while    { return(WHILE);    }
-write    { return(WRITE);    }
-{ID}     { printf("Identificador ");return(IDENTIFIER); }
-"//"[A-Za-z0-9_ ]* {printf("Comentário"); }
+{DIGIT}+      {     printf("inteiro "); yylval.yint = atoi(yytext);  return(NUMINT); }
+
+crie          {     printf("crie"); return(CRIE);}
+
+model         {     printf("model"); return(MODEL);}
+controller    {     printf("controller"); return(CONTROLLER);}
+view          {     printf("view"); return(VIEW);}
+
+campo         {     printf("campo"); return(CAMPO);}
+relacao       {     printf("relação"); return(RELACAO);}
+
+Integer       {     printf("inteiro"); return(INTEGER);}
+String        {     printf("string"); return(STRING);}
+Float         {     printf("float"); return(FLOAT);}
+Boolean       {     printf("bool"); return(BOOL);}
+Datetime      {     printf("data"); return(DATE);}
+Time          {     printf("time"); return(TIME);}
+Text          {     printf("texto"); return(TEXT);}
+
+{ID}+          {     printf("Palavra"); return(IDENTIFIER);}
+
+"\n"          {     printf("\n");}
 [ \t]+ /* blank, tab, new line: eat up whitespace */
-.        { printf("%c",yytext[0]); return(yytext[0]); }
+.             {     printf("%c",yytext[0]); return(yytext[0]); }
 
 %%
-
-

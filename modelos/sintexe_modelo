@@ -1,0 +1,39 @@
+model User {
+    field id: Integer
+    field name: String
+    field email: String
+    field password: String
+}
+
+model Post {
+    field id: Integer
+    field title: String
+    field content: Text
+    field created_at: DateTime
+    relation author: User
+}
+
+
+
+<ENTRADAS>
+
+crie model Agenda{
+    campo id = inteiro
+    campo nome = String
+    campo email = String
+    campo senha = String
+    campo altura = p_flutuante
+    campo data_nascimento = Data
+
+}
+
+verifique campo id
+verifique campo nome
+
+crie controller Agenda{
+
+}
+
+crie view Agenda{
+    
+}
