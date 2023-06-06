@@ -28,8 +28,12 @@ Datetime      {     printf("data"); return(DATE);}
 Time          {     printf("time"); return(TIME);}
 Text          {     printf("texto"); return(TEXT);}
 
-{ID}+          {     printf("Palavra"); return(IDENTIFIER);}
+rota          {     printf("rota"); return(ROUTE);}
+func          {     printf("função"); return(FUNC);}
+retorne       {     printf("return"); return(RETURN);}
 
+{ID}+         {     return(IDENTIFIER);}
+"#"[A-Za-z0-9_ ]* {printf("Comentário"); } 
 "\n"          {     printf("\n");}
 [ \t]+ /* blank, tab, new line: eat up whitespace */
 .             {     printf("%c",yytext[0]); return(yytext[0]); }

@@ -59,7 +59,10 @@ extern int yydebug;
     DATE = 269,
     TIME = 270,
     BOOL = 271,
-    TEXT = 272
+    TEXT = 272,
+    ROUTE = 273,
+    FUNC = 274,
+    RETURN = 275
   };
 #endif
 
@@ -68,12 +71,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 8 "parser.y" /* yacc.c:1909  */
+#line 14 "parser.y" /* yacc.c:1909  */
 
 	char * ystr;
 	int   yint;
 
-#line 77 "parser.tab.h" /* yacc.c:1909  */
+#line 80 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

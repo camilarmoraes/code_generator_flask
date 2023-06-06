@@ -1,2 +1,10 @@
 crie model User;
-crie campo nome : Integer;
+crie campo nome : String;
+crie campo idade : Integer;
+crie campo altura : Float;
+crie campo ano_nascimento : Datetime;
+
+# Isso é um comentário
+
+crie rota /home;
+func index;
