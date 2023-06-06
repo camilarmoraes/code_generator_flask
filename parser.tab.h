@@ -75,8 +75,9 @@ union YYSTYPE
 
 	char * ystr;
 	int   yint;
+	
 
-#line 80 "parser.tab.h" /* yacc.c:1909  */
+#line 81 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -935,7 +935,7 @@ YY_RULE_SETUP
 case 18:
 YY_RULE_SETUP
 #line 35 "scanner.l"
-{     return(IDENTIFIER);}
+{     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
@@ -945,22 +945,22 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 37 "scanner.l"
+#line 38 "scanner.l"
 {     printf("\n");}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 39 "scanner.l"
 /* blank, tab, new line: eat up whitespace */
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 39 "scanner.l"
+#line 40 "scanner.l"
 {     printf("%c",yytext[0]); return(yytext[0]); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 41 "scanner.l"
+#line 42 "scanner.l"
 ECHO;
 	YY_BREAK
 #line 967 "lex.yy.c"
@@ -1976,7 +1976,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 41 "scanner.l"
+#line 42 "scanner.l"
 
 
 

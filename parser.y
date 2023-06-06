@@ -14,7 +14,7 @@ FILE * output;
 %union {
 	char * ystr;
 	int   yint;
-}
+	}
 %start program
 %token CRIE
 %token MODEL CONTROLLER VIEW
@@ -25,33 +25,31 @@ FILE * output;
 %token INTEGER STRING FLOAT DATE TIME BOOL TEXT
 %token ROUTE FUNC RETURN
 
-
-
 %%
+
 program : statements 
         ;
 
 statements : statement ';'
             | statements statement ';'
+            {
+              
+            }
             ;
             
 statement : model_declaration 
           | field_declaration 
-          | relation_declaration 
-          | controller_declaration 
-          | view_declaration
           | route_declation
           | function_declation
           ;
 
 model_declaration : CRIE MODEL IDENTIFIER {
-                      //AddVAR("STRINMG",0);
-                      MakeVAR("AddVAR",0,SymTab);
+                        fprintf(output,"class %s (db.Model):\n",$3);
                     }
                   ;
 
 field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier{  
-
+                        
                     }
                   ;
 type_specifier : INTEGER 
@@ -65,41 +63,30 @@ type_specifier : INTEGER
                 };
 
 route_declation : CRIE ROUTE '/' IDENTIFIER{
+              fprintf(output,"@app.route('/%s') \n",$4);
+              
 
-}
+};
 
-function_declation : CRIE FUNC IDENTIFIER{
-  
-}
-
-relation_declaration : RELACAO IDENTIFIER ':' IDENTIFIER ';'{
-                          
-                      }
-                    ;
-
-controller_declaration : CONTROLLER IDENTIFIER ';'{
-
-                      }            
-                    ;
-view_declaration : VIEW IDENTIFIER ';'{
-
-                      };
-
-
+function_declation : FUNC IDENTIFIER{
+              fprintf(output,"\tdef %s:",$2);
+};
 
 %%
 
 
 main( int argc, char *argv[] )
 {
-  init_stringpool(99999);
-	if( yyparse () == 0) 
-		printf("codigo sem erros");
+  output= fopen("output.py", "w");
+
+  init_stringpool(10000);
+  if ( yyparse () == 0 && semerro==0 ) printf("codigo sem erros");
+
 }
 
 yyerror (char *s) /* Called by yyparse on error */
 {
-printf ("%s  na linha %d\n", s, yylineno );
+  printf ("%s  na linha %d\n", s, yylineno );
 }
 
 
