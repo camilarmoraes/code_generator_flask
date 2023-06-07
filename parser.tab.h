@@ -53,16 +53,19 @@ extern int yydebug;
     RELACAO = 263,
     NUMINT = 264,
     IDENTIFIER = 265,
-    INTEGER = 266,
-    STRING = 267,
-    FLOAT = 268,
-    DATE = 269,
-    TIME = 270,
-    BOOL = 271,
-    TEXT = 272,
-    ROUTE = 273,
-    FUNC = 274,
-    RETURN = 275
+    COMENTARIO = 266,
+    INTEGER = 267,
+    STRING = 268,
+    FLOAT = 269,
+    DATE = 270,
+    TIME = 271,
+    BOOL = 272,
+    TEXT = 273,
+    ROUTE = 274,
+    FUNC = 275,
+    RETURN = 276,
+    PK = 277,
+    FK = 278
   };
 #endif
 
@@ -71,13 +74,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 14 "parser.y" /* yacc.c:1909  */
+#line 15 "parser.y" /* yacc.c:1909  */
 
 	char * ystr;
 	int   yint;
 	
 
-#line 81 "parser.tab.h" /* yacc.c:1909  */
+#line 84 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

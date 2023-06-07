@@ -32,8 +32,13 @@ rota          {     printf("rota"); return(ROUTE);}
 func          {     printf("função"); return(FUNC);}
 retorne       {     printf("return"); return(RETURN);}
 
+FK            {     printf(""); return(FK);}
+PK            {     printf(""); return(PK);}
+
 {ID}+         {     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
-"#"[A-Za-z0-9_ ]* {printf("Comentário"); } 
+"#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO); } 
+
+
 
 "\n"          {     printf("\n");}
 [ \t]+ /* blank, tab, new line: eat up whitespace */
