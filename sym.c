@@ -12,22 +12,15 @@ int g_scope = 0;
 //char *calloc(int,int);
 VAR *SymTab = NULL;
 
-VAR *MakeVAR(char *name, int type, VAR *next) {
+VAR *MakeVAR(char *name, char *type, VAR *next) {
 	VAR *p;
 	p = NEW(VAR);
 	p->name = name;
 	p->type = type;
-	p->scope= g_scope;
 	p->next = next;
 	return p;
 }
 
-VAR *FindVAR (char *name) {
-	VAR *p = SymTab;
-	/* Note name comparision depends on name being in stringpool! */
-	while ((p != NULL)&&(p->name != name)) p = p->next;
-	return p;
-}
 
 /* Simple string table manager for use with symbol table */
 void init_stringpool(int strs) {
@@ -75,4 +68,17 @@ char *stringpool(char *s) {
 	    start = r;
 	}
 	return( start );
+}
+
+
+/* Fnção para printar dados */
+void imprimi()
+{
+    VAR *p = SymTab;
+    while ((p != NULL))
+    {
+        printf("Name: %s -> Tipo: %s ", p->name, p->type);
+        printf("\n");
+        p = p->next;
+    }
 }

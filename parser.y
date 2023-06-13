@@ -6,10 +6,12 @@
 extern int yylineno;
 extern VAR *SymTab;
 int semerro=0;
-
-#define AddVAR(n,t) SymTab=MakeVAR(n,t,SymTab)
+char id[100];
+int asController = 0;
+#define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
-FILE * output;
+FILE * output_model;
+FILE * output_controller;
 %}
 %define parse.error verbose
 %union {
@@ -42,26 +44,33 @@ statements : statement ';'
             ;
             
 statement : model_declaration 
+          | controller_declaration
           | field_declaration 
           | route_declation
           | function_declation
           ;
 
 comentario_declaration : COMENTARIO {
-      fprintf(output,"%s\n",$1);
+      fprintf(output_model,"%s\n",$1);
 };
 
-key : { fprintf(output,")\n");}
-    | ',' PK{ fprintf(output,")\n");}
-    | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output,",sa.ForeignKey(%s.%s))\n",$4,$6);}
+key : { fprintf(output_model,")\n");}
+    | ',' PK{ fprintf(output_model,")\n");}
+    | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s))\n",$4,$6);}
 ;
 
 model_declaration : CRIE MODEL IDENTIFIER {
-                        fprintf(output,"class %s (db.Model):\n",$3);
+                        fprintf(output_model,"class %s (db.Model):\n",$3);
                     }
                   ;
 
-field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {fprintf(output,"\t%s = sa.Column(sa.%s",$3,$5);} key
+field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {
+                          fprintf(output_model,"\t%s = sa.Column(sa.%s",$3,$5);
+                          AddVAR($3,$5);
+                          //if (asController == 1)
+                          //  fprintf(output_controller,"\t%s = sa.Column(sa.%s",$3,$5);
+                          
+                          } key
                   ;
 
 type_specifier : STRING {$$="String";}
@@ -71,23 +80,31 @@ type_specifier : STRING {$$="String";}
                 ;
 
 route_declation : CRIE ROUTE '/' IDENTIFIER{
-              fprintf(output,"@app.route('/%s') \n",$4);
+              fprintf(output_model,"@app.route('/%s') \n",$4);
 };
 
 function_declation : FUNC IDENTIFIER{
-              fprintf(output,"\tdef %s:",$2);
+              fprintf(output_model,"\tdef %s:",$2);
 };
 
+controller_declaration : CRIE CONTROLLER IDENTIFIER{
+                          asController = 1;
+                          fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request,abort\n");
+
+};
 
 %%
 
 
 main( int argc, char *argv[] )
 {
-  output= fopen("output.py", "w");
+  output_model= fopen("output_model.py", "w");
+  output_controller= fopen("output_controller.py", "w");
 
   init_stringpool(10000);
+  //create_controller(nome)
   if ( yyparse () == 0 && semerro==0 ) printf("codigo sem erros");
+  imprimi();
 
 }
 
@@ -95,5 +112,6 @@ yyerror (char *s) /* Called by yyparse on error */
 {
   printf ("%s  na linha %d\n", s, yylineno );
 }
+
 
 

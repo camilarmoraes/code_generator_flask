@@ -6,13 +6,13 @@ void init_stringpool(int);
 
 typedef struct VAR {
 	char *name;
-	int type;
-	int scope;
+	char *type;
 	struct VAR *next;
 	} VAR;
 
-VAR *MakeVAR(char *, int, VAR *);
-VAR *FindVAR(char *);
+VAR *MakeVAR(char *, char *, VAR *);
+void imprimi();
+
 
 
 
