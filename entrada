@@ -1,13 +1,18 @@
 crie model User;
-# 564564sdas
-crie campo nome : String, FK=Admin.id;
+crie campo nome : String, FK=Admin.id, nulo;
 crie campo idade : Integer, FK=Admin.id;
 # udhaiushd
 crie campo altura : Float;
 crie campo ano_nascimento : Datetime;
 
+func model __funcao__;
 # Isso e um comentario
 
+
+
+crie controller test;
 #isto é o controller 
 crie rota /home;
-func index;
+func controller index;
+
+func controller index2;

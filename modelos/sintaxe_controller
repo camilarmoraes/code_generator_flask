@@ -1,0 +1,35 @@
+-- importes das bibliotecas mínimas necessárias 
+
+@app.route('/',methods=["GET","POST"])
+def create_user():
+    if request.method == 'POST':
+        usuario = User(request.form['nome'])
+
+        db.session.add(usuario)
+        db.session.commit()
+    return render_template("arquivo.html")
+
+@app.route('/delete/<int:id>')
+def delete_user(id):
+    usuario = User.query.get(id)
+    db.session.delete(usuario)
+    db.session.commit()
+    return redirect(url_for(voltar))
+
+@app.route('/read')
+def read_users():
+    usuarios = User.query.all()
+    return render_template(".html",usuarios=usuarios)
+
+@app.route('/update/<int:id>)
+def update_user(id):
+    usuario = User.query.get(id)
+
+    if request.method == 'POST':
+        usuario.nome = request.form['nome']
+        db.session()
+
+    return render_template(".html,usuario=usuario)
+
+
+

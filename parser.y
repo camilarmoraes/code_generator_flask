@@ -6,7 +6,6 @@
 extern int yylineno;
 extern VAR *SymTab;
 int semerro=0;
-char id[100];
 int asController = 0;
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
@@ -38,9 +37,6 @@ program : statements
 statements : statement ';'
             | statements statement ';'
             | statements comentario_declaration 
-            {
-              
-            }
             ;
             
 statement : model_declaration 
@@ -56,35 +52,46 @@ comentario_declaration : COMENTARIO {
 
 key : { fprintf(output_model,")\n");}
     | ',' PK{ fprintf(output_model,")\n");}
-    | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s))\n",$4,$6);}
+    | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s)",$4,$6);}
 ;
 
+null : 
+      | ',' IDENTIFIER {fprintf(output_model,", nullable=False)\n");}
+      ;
+
 model_declaration : CRIE MODEL IDENTIFIER {
+                        asController = 0;
                         fprintf(output_model,"class %s (db.Model):\n",$3);
                     }
                   ;
 
 field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {
-                          fprintf(output_model,"\t%s = sa.Column(sa.%s",$3,$5);
-                          AddVAR($3,$5);
-                          //if (asController == 1)
-                          //  fprintf(output_controller,"\t%s = sa.Column(sa.%s",$3,$5);
-                          
-                          } key
+                          if (asController == 0){
+                              fprintf(output_model,"\t%s = sa.Column(sa.%s",$3,$5);
+                              AddVAR($3,$5);
+                          }
+                          } key null
                   ;
 
 type_specifier : STRING {$$="String";}
                 |INTEGER {$$="Integer";}
                 |FLOAT {$$="Float";}
                 |DATE {$$="Date";}
+                |BOOL {$$="Boolean";}
+                |TEXT {$$="Text";}
                 ;
 
-route_declation : CRIE ROUTE '/' IDENTIFIER{
-              fprintf(output_model,"@app.route('/%s') \n",$4);
-};
+function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"def %s(*args, **kwargs):\n\tpass\n",$3);}
+                    |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
+              | ;
 
-function_declation : FUNC IDENTIFIER{
-              fprintf(output_model,"\tdef %s:",$2);
+// PARTES DO CONTROLLER 
+route_declation : CRIE ROUTE '/' IDENTIFIER{
+              if (asController ==1)
+                fprintf(output_controller,"\n@app.route('/%s') \n",$4);
+              //else
+                //ASSERT("Rotas não podem ser criadas em Models!");
+
 };
 
 controller_declaration : CRIE CONTROLLER IDENTIFIER{
