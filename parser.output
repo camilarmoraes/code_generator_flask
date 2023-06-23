@@ -1,13 +1,13 @@
 Terminals unused in grammar
 
    VIEW
-   RELACAO
    NUMINT
    TIME
    RETURN
 
 
-State 38 conflicts: 1 shift/reduce
+State 43 conflicts: 1 shift/reduce
+State 54 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -19,75 +19,79 @@ Grammar
     2 statements: statement ';'
     3           | statements statement ';'
     4           | statements comentario_declaration
+    5           | comentario_declaration
 
-    5 statement: model_declaration
-    6          | controller_declaration
-    7          | field_declaration
-    8          | route_declation
-    9          | function_declation
+    6 statement: model_declaration
+    7          | controller_declaration
+    8          | field_declaration
+    9          | route_declation
+   10          | function_declation
+   11          | relation_declaration
 
-   10 comentario_declaration: COMENTARIO
+   12 comentario_declaration: COMENTARIO
 
-   11 key: %empty
-   12    | ',' PK
-   13    | ',' FK '=' IDENTIFIER '.' IDENTIFIER
+   13 key: %empty
+   14    | ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' PK
+   15    | ',' PK
+   16    | ',' FK '=' IDENTIFIER '.' IDENTIFIER
 
-   14 null: %empty
-   15     | ',' IDENTIFIER
+   17 null: %empty
+   18     | ',' NULO
 
-   16 model_declaration: CRIE MODEL IDENTIFIER
+   19 model_declaration: CRIE MODEL IDENTIFIER
 
-   17 $@1: %empty
+   20 $@1: %empty
 
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key null
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key null
 
-   19 type_specifier: STRING
-   20               | INTEGER
-   21               | FLOAT
-   22               | DATE
-   23               | BOOL
-   24               | TEXT
+   22 type_specifier: STRING
+   23               | INTEGER
+   24               | FLOAT
+   25               | DATE
+   26               | BOOL
+   27               | TEXT
 
-   25 function_declation: FUNC CONTROLLER IDENTIFIER
-   26                   | FUNC MODEL IDENTIFIER
-   27                   | %empty
+   28 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER
 
-   28 route_declation: CRIE ROUTE '/' IDENTIFIER
+   29 function_declation: FUNC CONTROLLER IDENTIFIER
+   30                   | FUNC MODEL IDENTIFIER
 
-   29 controller_declaration: CRIE CONTROLLER IDENTIFIER
+   31 route_declation: CRIE ROUTE IDENTIFIER
+
+   32 controller_declaration: CRIE CONTROLLER IDENTIFIER
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-',' (44) 12 13 15
-'.' (46) 13
-'/' (47) 28
-':' (58) 18
+',' (44) 14 15 16 18
+'.' (46) 14 16
+':' (58) 21 28
 ';' (59) 2 3
-'=' (61) 13
+'=' (61) 14 16
 error (256)
-CRIE (258) 16 18 28 29
-MODEL (259) 16 26
-CONTROLLER (260) 25 29
+CRIE (258) 19 21 28 31 32
+MODEL (259) 19 30
+CONTROLLER (260) 29 32
 VIEW (261)
-CAMPO (262) 18
-RELACAO (263)
+CAMPO (262) 21
+RELACAO (263) 28
 NUMINT (264)
-IDENTIFIER (265) 13 15 16 18 25 26 28 29
-COMENTARIO (266) 10
-INTEGER (267) 20
-STRING (268) 19
-FLOAT (269) 21
-DATE (270) 22
-TIME (271)
-BOOL (272) 23
-TEXT (273) 24
-ROUTE (274) 28
-FUNC (275) 25 26
-RETURN (276)
-PK (277) 12
-FK (278) 13
+IDENTIFIER (265) 14 16 19 21 28 29 30 31 32
+COMENTARIO (266) 12
+NULO (267) 18
+INTEGER (268) 23
+STRING (269) 22
+FLOAT (270) 24
+DATE (271) 25
+TIME (272)
+BOOL (273) 26
+TEXT (274) 27
+ROUTE (275) 31
+FUNC (276) 29 30
+RETURN (277)
+PK (278) 14 15
+FK (279) 14 16
 
 
 Nonterminals, with rules where they appear
@@ -97,431 +101,494 @@ $accept (30)
 program (31)
     on left: 1, on right: 0
 statements (32)
-    on left: 2 3 4, on right: 1 3 4
+    on left: 2 3 4 5, on right: 1 3 4
 statement (33)
-    on left: 5 6 7 8 9, on right: 2 3
+    on left: 6 7 8 9 10 11, on right: 2 3
 comentario_declaration (34)
-    on left: 10, on right: 4
+    on left: 12, on right: 4 5
 key (35)
-    on left: 11 12 13, on right: 18
+    on left: 13 14 15 16, on right: 21
 null (36)
-    on left: 14 15, on right: 18
+    on left: 17 18, on right: 21
 model_declaration (37)
-    on left: 16, on right: 5
+    on left: 19, on right: 6
 field_declaration (38)
-    on left: 18, on right: 7
+    on left: 21, on right: 8
 $@1 (39)
-    on left: 17, on right: 18
+    on left: 20, on right: 21
 type_specifier (40)
-    on left: 19 20 21 22 23 24, on right: 18
-function_declation (41)
-    on left: 25 26 27, on right: 9
-route_declation (42)
-    on left: 28, on right: 8
-controller_declaration (43)
-    on left: 29, on right: 6
+    on left: 22 23 24 25 26 27, on right: 21
+relation_declaration (41)
+    on left: 28, on right: 11
+function_declation (42)
+    on left: 29 30, on right: 10
+route_declation (43)
+    on left: 31, on right: 9
+controller_declaration (44)
+    on left: 32, on right: 7
 
 
 State 0
 
     0 $accept: . program $end
 
-    CRIE  shift, and go to state 1
-    FUNC  shift, and go to state 2
+    CRIE        shift, and go to state 1
+    COMENTARIO  shift, and go to state 2
+    FUNC        shift, and go to state 3
 
-    $default  reduce using rule 27 (function_declation)
-
-    program                 go to state 3
-    statements              go to state 4
-    statement               go to state 5
-    model_declaration       go to state 6
-    field_declaration       go to state 7
-    function_declation      go to state 8
-    route_declation         go to state 9
-    controller_declaration  go to state 10
+    program                 go to state 4
+    statements              go to state 5
+    statement               go to state 6
+    comentario_declaration  go to state 7
+    model_declaration       go to state 8
+    field_declaration       go to state 9
+    relation_declaration    go to state 10
+    function_declation      go to state 11
+    route_declation         go to state 12
+    controller_declaration  go to state 13
 
 
 State 1
 
-   16 model_declaration: CRIE . MODEL IDENTIFIER
-   18 field_declaration: CRIE . CAMPO IDENTIFIER ':' type_specifier $@1 key null
-   28 route_declation: CRIE . ROUTE '/' IDENTIFIER
-   29 controller_declaration: CRIE . CONTROLLER IDENTIFIER
+   19 model_declaration: CRIE . MODEL IDENTIFIER
+   21 field_declaration: CRIE . CAMPO IDENTIFIER ':' type_specifier $@1 key null
+   28 relation_declaration: CRIE . RELACAO IDENTIFIER ':' IDENTIFIER
+   31 route_declation: CRIE . ROUTE IDENTIFIER
+   32 controller_declaration: CRIE . CONTROLLER IDENTIFIER
 
-    MODEL       shift, and go to state 11
-    CONTROLLER  shift, and go to state 12
-    CAMPO       shift, and go to state 13
-    ROUTE       shift, and go to state 14
+    MODEL       shift, and go to state 14
+    CONTROLLER  shift, and go to state 15
+    CAMPO       shift, and go to state 16
+    RELACAO     shift, and go to state 17
+    ROUTE       shift, and go to state 18
 
 
 State 2
 
-   25 function_declation: FUNC . CONTROLLER IDENTIFIER
-   26                   | FUNC . MODEL IDENTIFIER
+   12 comentario_declaration: COMENTARIO .
 
-    MODEL       shift, and go to state 15
-    CONTROLLER  shift, and go to state 16
+    $default  reduce using rule 12 (comentario_declaration)
 
 
 State 3
 
-    0 $accept: program . $end
+   29 function_declation: FUNC . CONTROLLER IDENTIFIER
+   30                   | FUNC . MODEL IDENTIFIER
 
-    $end  shift, and go to state 17
+    MODEL       shift, and go to state 19
+    CONTROLLER  shift, and go to state 20
 
 
 State 4
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 21
+
+
+State 5
 
     1 program: statements .
     3 statements: statements . statement ';'
     4           | statements . comentario_declaration
 
     CRIE        shift, and go to state 1
-    COMENTARIO  shift, and go to state 18
-    FUNC        shift, and go to state 2
+    COMENTARIO  shift, and go to state 2
+    FUNC        shift, and go to state 3
 
-    ';'       reduce using rule 27 (function_declation)
     $default  reduce using rule 1 (program)
 
-    statement               go to state 19
-    comentario_declaration  go to state 20
-    model_declaration       go to state 6
-    field_declaration       go to state 7
-    function_declation      go to state 8
-    route_declation         go to state 9
-    controller_declaration  go to state 10
-
-
-State 5
-
-    2 statements: statement . ';'
-
-    ';'  shift, and go to state 21
+    statement               go to state 22
+    comentario_declaration  go to state 23
+    model_declaration       go to state 8
+    field_declaration       go to state 9
+    relation_declaration    go to state 10
+    function_declation      go to state 11
+    route_declation         go to state 12
+    controller_declaration  go to state 13
 
 
 State 6
 
-    5 statement: model_declaration .
+    2 statements: statement . ';'
 
-    $default  reduce using rule 5 (statement)
+    ';'  shift, and go to state 24
 
 
 State 7
 
-    7 statement: field_declaration .
+    5 statements: comentario_declaration .
 
-    $default  reduce using rule 7 (statement)
+    $default  reduce using rule 5 (statements)
 
 
 State 8
 
-    9 statement: function_declation .
+    6 statement: model_declaration .
 
-    $default  reduce using rule 9 (statement)
+    $default  reduce using rule 6 (statement)
 
 
 State 9
 
-    8 statement: route_declation .
+    8 statement: field_declaration .
 
     $default  reduce using rule 8 (statement)
 
 
 State 10
 
-    6 statement: controller_declaration .
+   11 statement: relation_declaration .
 
-    $default  reduce using rule 6 (statement)
+    $default  reduce using rule 11 (statement)
 
 
 State 11
 
-   16 model_declaration: CRIE MODEL . IDENTIFIER
+   10 statement: function_declation .
 
-    IDENTIFIER  shift, and go to state 22
+    $default  reduce using rule 10 (statement)
 
 
 State 12
 
-   29 controller_declaration: CRIE CONTROLLER . IDENTIFIER
+    9 statement: route_declation .
 
-    IDENTIFIER  shift, and go to state 23
+    $default  reduce using rule 9 (statement)
 
 
 State 13
 
-   18 field_declaration: CRIE CAMPO . IDENTIFIER ':' type_specifier $@1 key null
+    7 statement: controller_declaration .
 
-    IDENTIFIER  shift, and go to state 24
+    $default  reduce using rule 7 (statement)
 
 
 State 14
 
-   28 route_declation: CRIE ROUTE . '/' IDENTIFIER
+   19 model_declaration: CRIE MODEL . IDENTIFIER
 
-    '/'  shift, and go to state 25
+    IDENTIFIER  shift, and go to state 25
 
 
 State 15
 
-   26 function_declation: FUNC MODEL . IDENTIFIER
+   32 controller_declaration: CRIE CONTROLLER . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 26
 
 
 State 16
 
-   25 function_declation: FUNC CONTROLLER . IDENTIFIER
+   21 field_declaration: CRIE CAMPO . IDENTIFIER ':' type_specifier $@1 key null
 
     IDENTIFIER  shift, and go to state 27
 
 
 State 17
 
+   28 relation_declaration: CRIE RELACAO . IDENTIFIER ':' IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 28
+
+
+State 18
+
+   31 route_declation: CRIE ROUTE . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 29
+
+
+State 19
+
+   30 function_declation: FUNC MODEL . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 30
+
+
+State 20
+
+   29 function_declation: FUNC CONTROLLER . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 31
+
+
+State 21
+
     0 $accept: program $end .
 
     $default  accept
 
 
-State 18
-
-   10 comentario_declaration: COMENTARIO .
-
-    $default  reduce using rule 10 (comentario_declaration)
-
-
-State 19
+State 22
 
     3 statements: statements statement . ';'
 
-    ';'  shift, and go to state 28
+    ';'  shift, and go to state 32
 
 
-State 20
+State 23
 
     4 statements: statements comentario_declaration .
 
     $default  reduce using rule 4 (statements)
 
 
-State 21
+State 24
 
     2 statements: statement ';' .
 
     $default  reduce using rule 2 (statements)
 
 
-State 22
-
-   16 model_declaration: CRIE MODEL IDENTIFIER .
-
-    $default  reduce using rule 16 (model_declaration)
-
-
-State 23
-
-   29 controller_declaration: CRIE CONTROLLER IDENTIFIER .
-
-    $default  reduce using rule 29 (controller_declaration)
-
-
-State 24
-
-   18 field_declaration: CRIE CAMPO IDENTIFIER . ':' type_specifier $@1 key null
-
-    ':'  shift, and go to state 29
-
-
 State 25
 
-   28 route_declation: CRIE ROUTE '/' . IDENTIFIER
+   19 model_declaration: CRIE MODEL IDENTIFIER .
 
-    IDENTIFIER  shift, and go to state 30
+    $default  reduce using rule 19 (model_declaration)
 
 
 State 26
 
-   26 function_declation: FUNC MODEL IDENTIFIER .
+   32 controller_declaration: CRIE CONTROLLER IDENTIFIER .
 
-    $default  reduce using rule 26 (function_declation)
+    $default  reduce using rule 32 (controller_declaration)
 
 
 State 27
 
-   25 function_declation: FUNC CONTROLLER IDENTIFIER .
+   21 field_declaration: CRIE CAMPO IDENTIFIER . ':' type_specifier $@1 key null
 
-    $default  reduce using rule 25 (function_declation)
+    ':'  shift, and go to state 33
 
 
 State 28
+
+   28 relation_declaration: CRIE RELACAO IDENTIFIER . ':' IDENTIFIER
+
+    ':'  shift, and go to state 34
+
+
+State 29
+
+   31 route_declation: CRIE ROUTE IDENTIFIER .
+
+    $default  reduce using rule 31 (route_declation)
+
+
+State 30
+
+   30 function_declation: FUNC MODEL IDENTIFIER .
+
+    $default  reduce using rule 30 (function_declation)
+
+
+State 31
+
+   29 function_declation: FUNC CONTROLLER IDENTIFIER .
+
+    $default  reduce using rule 29 (function_declation)
+
+
+State 32
 
     3 statements: statements statement ';' .
 
     $default  reduce using rule 3 (statements)
 
 
-State 29
-
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' . type_specifier $@1 key null
-
-    INTEGER  shift, and go to state 31
-    STRING   shift, and go to state 32
-    FLOAT    shift, and go to state 33
-    DATE     shift, and go to state 34
-    BOOL     shift, and go to state 35
-    TEXT     shift, and go to state 36
-
-    type_specifier  go to state 37
-
-
-State 30
-
-   28 route_declation: CRIE ROUTE '/' IDENTIFIER .
-
-    $default  reduce using rule 28 (route_declation)
-
-
-State 31
-
-   20 type_specifier: INTEGER .
-
-    $default  reduce using rule 20 (type_specifier)
-
-
-State 32
-
-   19 type_specifier: STRING .
-
-    $default  reduce using rule 19 (type_specifier)
-
-
 State 33
 
-   21 type_specifier: FLOAT .
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' . type_specifier $@1 key null
 
-    $default  reduce using rule 21 (type_specifier)
+    INTEGER  shift, and go to state 35
+    STRING   shift, and go to state 36
+    FLOAT    shift, and go to state 37
+    DATE     shift, and go to state 38
+    BOOL     shift, and go to state 39
+    TEXT     shift, and go to state 40
+
+    type_specifier  go to state 41
 
 
 State 34
 
-   22 type_specifier: DATE .
+   28 relation_declaration: CRIE RELACAO IDENTIFIER ':' . IDENTIFIER
 
-    $default  reduce using rule 22 (type_specifier)
+    IDENTIFIER  shift, and go to state 42
 
 
 State 35
 
-   23 type_specifier: BOOL .
+   23 type_specifier: INTEGER .
 
     $default  reduce using rule 23 (type_specifier)
 
 
 State 36
 
-   24 type_specifier: TEXT .
+   22 type_specifier: STRING .
 
-    $default  reduce using rule 24 (type_specifier)
+    $default  reduce using rule 22 (type_specifier)
 
 
 State 37
 
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier . $@1 key null
+   24 type_specifier: FLOAT .
 
-    $default  reduce using rule 17 ($@1)
-
-    $@1  go to state 38
+    $default  reduce using rule 24 (type_specifier)
 
 
 State 38
 
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 . key null
+   25 type_specifier: DATE .
 
-    ','  shift, and go to state 39
-
-    ','       [reduce using rule 11 (key)]
-    $default  reduce using rule 11 (key)
-
-    key  go to state 40
+    $default  reduce using rule 25 (type_specifier)
 
 
 State 39
 
-   12 key: ',' . PK
-   13    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   26 type_specifier: BOOL .
 
-    PK  shift, and go to state 41
-    FK  shift, and go to state 42
+    $default  reduce using rule 26 (type_specifier)
 
 
 State 40
 
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key . null
+   27 type_specifier: TEXT .
 
-    ','  shift, and go to state 43
-
-    $default  reduce using rule 14 (null)
-
-    null  go to state 44
+    $default  reduce using rule 27 (type_specifier)
 
 
 State 41
 
-   12 key: ',' PK .
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier . $@1 key null
 
-    $default  reduce using rule 12 (key)
+    $default  reduce using rule 20 ($@1)
+
+    $@1  go to state 43
 
 
 State 42
 
-   13 key: ',' FK . '=' IDENTIFIER '.' IDENTIFIER
+   28 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER .
 
-    '='  shift, and go to state 45
+    $default  reduce using rule 28 (relation_declaration)
 
 
 State 43
 
-   15 null: ',' . IDENTIFIER
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 . key null
 
-    IDENTIFIER  shift, and go to state 46
+    ','  shift, and go to state 44
+
+    ','       [reduce using rule 13 (key)]
+    $default  reduce using rule 13 (key)
+
+    key  go to state 45
 
 
 State 44
 
-   18 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key null .
+   14 key: ',' . FK '=' IDENTIFIER '.' IDENTIFIER ',' PK
+   15    | ',' . PK
+   16    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER
 
-    $default  reduce using rule 18 (field_declaration)
+    PK  shift, and go to state 46
+    FK  shift, and go to state 47
 
 
 State 45
 
-   13 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key . null
 
-    IDENTIFIER  shift, and go to state 47
+    ','  shift, and go to state 48
+
+    $default  reduce using rule 17 (null)
+
+    null  go to state 49
 
 
 State 46
 
-   15 null: ',' IDENTIFIER .
+   15 key: ',' PK .
 
-    $default  reduce using rule 15 (null)
+    $default  reduce using rule 15 (key)
 
 
 State 47
 
-   13 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+   14 key: ',' FK . '=' IDENTIFIER '.' IDENTIFIER ',' PK
+   16    | ',' FK . '=' IDENTIFIER '.' IDENTIFIER
 
-    '.'  shift, and go to state 48
+    '='  shift, and go to state 50
 
 
 State 48
 
-   13 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+   18 null: ',' . NULO
 
-    IDENTIFIER  shift, and go to state 49
+    NULO  shift, and go to state 51
 
 
 State 49
 
-   13 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+   21 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 key null .
 
-    $default  reduce using rule 13 (key)
+    $default  reduce using rule 21 (field_declaration)
+
+
+State 50
+
+   14 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER ',' PK
+   16    | ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 52
+
+
+State 51
+
+   18 null: ',' NULO .
+
+    $default  reduce using rule 18 (null)
+
+
+State 52
+
+   14 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER ',' PK
+   16    | ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+
+    '.'  shift, and go to state 53
+
+
+State 53
+
+   14 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER ',' PK
+   16    | ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 54
+
+
+State 54
+
+   14 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER . ',' PK
+   16    | ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+
+    ','  shift, and go to state 55
+
+    ','       [reduce using rule 16 (key)]
+    $default  reduce using rule 16 (key)
+
+
+State 55
+
+   14 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' . PK
+
+    PK  shift, and go to state 56
+
+
+State 56
+
+   14 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' PK .
+
+    $default  reduce using rule 14 (key)

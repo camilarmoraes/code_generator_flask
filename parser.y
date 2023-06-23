@@ -23,7 +23,7 @@ FILE * output_controller;
 %token CAMPO RELACAO
 
 %token <yint> NUMINT
-%token <ystr> IDENTIFIER COMENTARIO
+%token <ystr> IDENTIFIER COMENTARIO NULO
 %token INTEGER STRING FLOAT DATE TIME BOOL TEXT
 %token ROUTE FUNC RETURN
 %token PK FK
@@ -37,6 +37,7 @@ program : statements
 statements : statement ';'
             | statements statement ';'
             | statements comentario_declaration 
+            | comentario_declaration
             ;
             
 statement : model_declaration 
@@ -44,6 +45,7 @@ statement : model_declaration
           | field_declaration 
           | route_declation
           | function_declation
+          | relation_declaration
           ;
 
 comentario_declaration : COMENTARIO {
@@ -51,12 +53,14 @@ comentario_declaration : COMENTARIO {
 };
 
 key : { fprintf(output_model,")\n");}
-    | ',' PK{ fprintf(output_model,")\n");}
+    | ',' FK  '=' IDENTIFIER '.' IDENTIFIER ',' PK{fprintf(output_model,", sa.ForeignKey(%s.%s), primary_key=True",$4,$6);}
+    // | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER {ASSERT((NULL),"A FK deve ser declarada antes da PK!");}
+    | ',' PK{ fprintf(output_model,", primary_key=True");}
     | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s)",$4,$6);}
 ;
 
-null : 
-      | ',' IDENTIFIER {fprintf(output_model,", nullable=False)\n");}
+null : {fprintf(output_model,")\n");}
+      | ',' NULO{fprintf(output_model,", nullable = False)\n");}
       ;
 
 model_declaration : CRIE MODEL IDENTIFIER {
@@ -71,7 +75,7 @@ field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {
                               AddVAR($3,$5);
                           }
                           } key null
-                  ;
+;
 
 type_specifier : STRING {$$="String";}
                 |INTEGER {$$="Integer";}
@@ -81,16 +85,20 @@ type_specifier : STRING {$$="String";}
                 |TEXT {$$="Text";}
                 ;
 
+relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER{
+                if (asController == 0){
+                  fprintf(output_model,"\t%s = db.relanshionship('%s')",$3,$5);
+                }
+}; 
+
 function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"def %s(*args, **kwargs):\n\tpass\n",$3);}
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
-              | ;
+;
 
 // PARTES DO CONTROLLER 
-route_declation : CRIE ROUTE '/' IDENTIFIER{
+route_declation : CRIE ROUTE IDENTIFIER{
               if (asController ==1)
-                fprintf(output_controller,"\n@app.route('/%s') \n",$4);
-              //else
-                //ASSERT("Rotas não podem ser criadas em Models!");
+                fprintf(output_controller,"\n@app.route('/%s',methods=['GET','POST']) \n",$3);
 
 };
 
@@ -109,7 +117,6 @@ main( int argc, char *argv[] )
   output_controller= fopen("output_controller.py", "w");
 
   init_stringpool(10000);
-  //create_controller(nome)
   if ( yyparse () == 0 && semerro==0 ) printf("codigo sem erros");
   imprimi();
 

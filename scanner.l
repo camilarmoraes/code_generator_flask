@@ -34,10 +34,10 @@ retorne       {     printf("return"); return(RETURN);}
 
 FK            {     printf(""); return(FK);}
 PK            {     printf(""); return(PK);}
+nulo          {     printf(""); return(NULO);}
 
 {ID}+         {     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
-"#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO); } 
-
+"#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO);} 
 
 
 "\n"          {     printf("\n");}
