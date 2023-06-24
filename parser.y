@@ -54,7 +54,7 @@ comentario_declaration : COMENTARIO {
 
 key : { fprintf(output_model,")\n");}
     | ',' FK  '=' IDENTIFIER '.' IDENTIFIER ',' PK{fprintf(output_model,", sa.ForeignKey(%s.%s), primary_key=True",$4,$6);}
-    // | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER {ASSERT((NULL),"A FK deve ser declarada antes da PK!");}
+  //  | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER {ASSERT((NULL),"A FK deve ser declarada antes da PK!");}
     | ',' PK{ fprintf(output_model,", primary_key=True");}
     | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s)",$4,$6);}
 ;
@@ -91,20 +91,25 @@ relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER{
                 }
 }; 
 
-function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"def %s(*args, **kwargs):\n\tpass\n",$3);}
+function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
 ;
 
-// PARTES DO CONTROLLER 
-route_declation : CRIE ROUTE IDENTIFIER{
-              if (asController ==1)
-                fprintf(output_controller,"\n@app.route('/%s',methods=['GET','POST']) \n",$3);
+other_identifier : {fprintf(output_controller,"')");}
+                  | IDENTIFIER {fprintf(output_controller,"/%s",$1);} other_identifier
+                   
+;
 
-};
+// PARTES DO CONTROLLER 
+route_declation : CRIE ROUTE IDENTIFIER {
+              if (asController ==1)
+                fprintf(output_controller,"\n@app.route('/%s",$3);
+              } other_identifier
+;
 
 controller_declaration : CRIE CONTROLLER IDENTIFIER{
                           asController = 1;
-                          fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request,abort\n");
+                          fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
 
 };
 

@@ -1,4 +1,8 @@
-crie model User;
-crie campo nome : String, FK=Admin.id, PK,nulo;
-crie campo idade : Integer, FK=Admin.id;
-crie relacao endereco : Endereco;
+#crie model User;
+#crie campo nome : String, FK=Admin.id, PK,nulo;
+#crie campo idade : Integer, FK=Admin.id;
+#crie relacao endereco : Endereco;
+
+crie controller UserController;
+crie rota home index modulo cachorro;
+func controller duncao;
