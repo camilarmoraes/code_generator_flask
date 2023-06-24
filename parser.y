@@ -49,7 +49,12 @@ statement : model_declaration
           ;
 
 comentario_declaration : COMENTARIO {
-      fprintf(output_model,"%s\n",$1);
+      if (asController == 0){
+        fprintf(output_model,"%s\n",$1);
+      }else{
+        fprintf(output_controller,"%s\n",$1);
+      }
+      
 };
 
 key : { fprintf(output_model,")\n");}
@@ -95,6 +100,7 @@ function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
 ;
 
+// Para caso se crie endpoints maiores
 other_identifier : {fprintf(output_controller,"')");}
                   | IDENTIFIER {fprintf(output_controller,"/%s",$1);} other_identifier
                    
@@ -102,7 +108,7 @@ other_identifier : {fprintf(output_controller,"')");}
 
 // PARTES DO CONTROLLER 
 route_declation : CRIE ROUTE IDENTIFIER {
-              if (asController ==1)
+              if (asController == 1)
                 fprintf(output_controller,"\n@app.route('/%s",$3);
               } other_identifier
 ;

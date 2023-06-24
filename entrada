@@ -1,8 +1,11 @@
-#crie model User;
-#crie campo nome : String, FK=Admin.id, PK,nulo;
-#crie campo idade : Integer, FK=Admin.id;
-#crie relacao endereco : Endereco;
+#Comentario model
+crie model User;
+#comentario no model
+crie campo nome : String, FK=Admin.id, PK,nulo;
+crie campo idade : Integer, FK=Admin.id;
+crie relacao endereco : Endereco;
 
 crie controller UserController;
+#comentario no controller
 crie rota home index modulo cachorro;
 func controller duncao;

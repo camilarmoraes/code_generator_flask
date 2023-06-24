@@ -465,9 +465,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    34,    34,    37,    38,    39,    40,    43,    44,    45,
-      46,    47,    48,    51,    55,    56,    58,    59,    62,    63,
-      66,    72,    72,    80,    81,    82,    83,    84,    85,    88,
-      94,    95,    98,    99,    99,   104,   104,   110
+      46,    47,    48,    51,    60,    61,    63,    64,    67,    68,
+      71,    77,    77,    85,    86,    87,    88,    89,    90,    93,
+      99,   100,   104,   105,   105,   110,   110,   116
 };
 #endif
 
@@ -1278,158 +1278,163 @@ yyreduce:
         case 13:
 #line 51 "parser.y" /* yacc.c:1646  */
     {
-      fprintf(output_model,"%s\n",(yyvsp[0].ystr));
+      if (asController == 0){
+        fprintf(output_model,"%s\n",(yyvsp[0].ystr));
+      }else{
+        fprintf(output_controller,"%s\n",(yyvsp[0].ystr));
+      }
+      
 }
-#line 1284 "parser.tab.c" /* yacc.c:1646  */
+#line 1289 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 55 "parser.y" /* yacc.c:1646  */
+#line 60 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,")\n");}
-#line 1290 "parser.tab.c" /* yacc.c:1646  */
+#line 1295 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 56 "parser.y" /* yacc.c:1646  */
+#line 61 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,", sa.ForeignKey(%s.%s), primary_key=True",(yyvsp[-4].ystr),(yyvsp[-2].ystr));}
-#line 1296 "parser.tab.c" /* yacc.c:1646  */
+#line 1301 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 58 "parser.y" /* yacc.c:1646  */
+#line 63 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,", primary_key=True");}
-#line 1302 "parser.tab.c" /* yacc.c:1646  */
+#line 1307 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 59 "parser.y" /* yacc.c:1646  */
+#line 64 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,",sa.ForeignKey(%s.%s)",(yyvsp[-2].ystr),(yyvsp[0].ystr));}
-#line 1308 "parser.tab.c" /* yacc.c:1646  */
+#line 1313 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 62 "parser.y" /* yacc.c:1646  */
+#line 67 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,")\n");}
-#line 1314 "parser.tab.c" /* yacc.c:1646  */
+#line 1319 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 63 "parser.y" /* yacc.c:1646  */
+#line 68 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,", nullable = False)\n");}
-#line 1320 "parser.tab.c" /* yacc.c:1646  */
+#line 1325 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 66 "parser.y" /* yacc.c:1646  */
+#line 71 "parser.y" /* yacc.c:1646  */
     {
                         asController = 0;
                         fprintf(output_model,"class %s (db.Model):\n",(yyvsp[0].ystr));
                     }
-#line 1329 "parser.tab.c" /* yacc.c:1646  */
+#line 1334 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 72 "parser.y" /* yacc.c:1646  */
+#line 77 "parser.y" /* yacc.c:1646  */
     {
                           if (asController == 0){
                               fprintf(output_model,"\t%s = sa.Column(sa.%s",(yyvsp[-2].ystr),(yyvsp[0].ystr));
                               AddVAR((yyvsp[-2].ystr),(yyvsp[0].ystr));
                           }
                           }
-#line 1340 "parser.tab.c" /* yacc.c:1646  */
+#line 1345 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 80 "parser.y" /* yacc.c:1646  */
+#line 85 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="String";}
-#line 1346 "parser.tab.c" /* yacc.c:1646  */
+#line 1351 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 81 "parser.y" /* yacc.c:1646  */
+#line 86 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Integer";}
-#line 1352 "parser.tab.c" /* yacc.c:1646  */
+#line 1357 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 82 "parser.y" /* yacc.c:1646  */
+#line 87 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Float";}
-#line 1358 "parser.tab.c" /* yacc.c:1646  */
+#line 1363 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 83 "parser.y" /* yacc.c:1646  */
+#line 88 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Date";}
-#line 1364 "parser.tab.c" /* yacc.c:1646  */
+#line 1369 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 84 "parser.y" /* yacc.c:1646  */
+#line 89 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Boolean";}
-#line 1370 "parser.tab.c" /* yacc.c:1646  */
+#line 1375 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 85 "parser.y" /* yacc.c:1646  */
+#line 90 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Text";}
-#line 1376 "parser.tab.c" /* yacc.c:1646  */
+#line 1381 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 88 "parser.y" /* yacc.c:1646  */
+#line 93 "parser.y" /* yacc.c:1646  */
     {
                 if (asController == 0){
                   fprintf(output_model,"\t%s = db.relanshionship('%s')",(yyvsp[-2].ystr),(yyvsp[0].ystr));
                 }
 }
-#line 1386 "parser.tab.c" /* yacc.c:1646  */
+#line 1391 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 94 "parser.y" /* yacc.c:1646  */
+#line 99 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",(yyvsp[0].ystr));}
-#line 1392 "parser.tab.c" /* yacc.c:1646  */
+#line 1397 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 95 "parser.y" /* yacc.c:1646  */
+#line 100 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",(yyvsp[0].ystr));}
-#line 1398 "parser.tab.c" /* yacc.c:1646  */
+#line 1403 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 98 "parser.y" /* yacc.c:1646  */
+#line 104 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"')");}
-#line 1404 "parser.tab.c" /* yacc.c:1646  */
+#line 1409 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 99 "parser.y" /* yacc.c:1646  */
+#line 105 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"/%s",(yyvsp[0].ystr));}
-#line 1410 "parser.tab.c" /* yacc.c:1646  */
+#line 1415 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 104 "parser.y" /* yacc.c:1646  */
+#line 110 "parser.y" /* yacc.c:1646  */
     {
-              if (asController ==1)
+              if (asController == 1)
                 fprintf(output_controller,"\n@app.route('/%s",(yyvsp[0].ystr));
               }
-#line 1419 "parser.tab.c" /* yacc.c:1646  */
+#line 1424 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 110 "parser.y" /* yacc.c:1646  */
+#line 116 "parser.y" /* yacc.c:1646  */
     {
                           asController = 1;
                           fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
 
 }
-#line 1429 "parser.tab.c" /* yacc.c:1646  */
+#line 1434 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1433 "parser.tab.c" /* yacc.c:1646  */
+#line 1438 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1657,7 +1662,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 116 "parser.y" /* yacc.c:1906  */
+#line 122 "parser.y" /* yacc.c:1906  */
 
 
 
