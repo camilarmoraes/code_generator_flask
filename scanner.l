@@ -31,10 +31,17 @@ Text          {     printf("texto"); return(TEXT);}
 rota          {     printf("rota"); return(ROUTE);}
 func          {     printf("função"); return(FUNC);}
 retorne       {     printf("return"); return(RETURN);}
+template      {     printf("template"); return(TEMPLATE);}
+redirecionar  {     printf("redirecionar"); return(REDIRECT);}
 
 FK            {     printf(""); return(FK);}
 PK            {     printf(""); return(PK);}
 nulo          {     printf(""); return(NULO);}
+
+addbanco       {    printf("addbanco"); return(ADDBANCO);}
+deletebanco    {    printf("deletebanco"); return(DELETEBANCO);}
+readbanco      {    printf("readbanco"); return(READBANCO);}
+updatebanco    {    printf("updatebanco"); return(UPDATEBANCO);}
 
 {ID}+         {     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
 "#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO);} 

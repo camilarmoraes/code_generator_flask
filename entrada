@@ -1,11 +1,6 @@
-#Comentario model
 crie model User;
-#comentario no model
-crie campo nome : String, FK=Admin.id, PK,nulo;
-crie campo idade : Integer, FK=Admin.id;
-crie relacao endereco : Endereco;
 
-crie controller UserController;
-#comentario no controller
-crie rota home index modulo cachorro;
-func controller duncao;
+crie controller User;
+func controller crie addbanco criar_usuario retorne redirecionar;
+func controller crie readbanco ler_cliente retorne template;
+func controller index;

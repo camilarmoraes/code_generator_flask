@@ -66,7 +66,13 @@ extern int yydebug;
     FUNC = 276,
     RETURN = 277,
     PK = 278,
-    FK = 279
+    FK = 279,
+    REDIRECT = 280,
+    TEMPLATE = 281,
+    ADDBANCO = 282,
+    DELETEBANCO = 283,
+    UPDATEBANCO = 284,
+    READBANCO = 285
   };
 #endif
 
@@ -75,13 +81,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 16 "parser.y" /* yacc.c:1909  */
+#line 17 "parser.y" /* yacc.c:1909  */
 
 	char * ystr;
 	int   yint;
 	
 
-#line 85 "parser.tab.h" /* yacc.c:1909  */
+#line 91 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

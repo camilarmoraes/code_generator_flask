@@ -21,6 +21,12 @@ VAR *MakeVAR(char *name, char *type, VAR *next) {
 	return p;
 }
 
+VAR *FindVAR (char *name) {
+	VAR *p = SymTab;
+	/* Note name comparision depends on name being in stringpool! */
+	while ((p != NULL)&&(p->name != name)) p = p->next;
+	return p;
+}
 
 /* Simple string table manager for use with symbol table */
 void init_stringpool(int strs) {

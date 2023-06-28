@@ -7,6 +7,7 @@ extern int yylineno;
 extern VAR *SymTab;
 int semerro=0;
 int asController = 0;
+char nomeModel[100];
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
 FILE * output_model;
@@ -26,7 +27,8 @@ FILE * output_controller;
 %token <ystr> IDENTIFIER COMENTARIO NULO
 %token INTEGER STRING FLOAT DATE TIME BOOL TEXT
 %token ROUTE FUNC RETURN
-%token PK FK
+%token PK FK REDIRECT TEMPLATE
+%token ADDBANCO DELETEBANCO UPDATEBANCO READBANCO
 %type <ystr> type_specifier 
 
 %%
@@ -71,6 +73,7 @@ null : {fprintf(output_model,")\n");}
 model_declaration : CRIE MODEL IDENTIFIER {
                         asController = 0;
                         fprintf(output_model,"class %s (db.Model):\n",$3);
+                        strcpy(nomeModel,$3);
                     }
                   ;
 
@@ -96,7 +99,29 @@ relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER{
                 }
 }; 
 
-function_declation : FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
+operation_banco :  ADDBANCO IDENTIFIER {
+                    fprintf(output_controller,"\ndef %s():\n\t",$2);
+                    fprintf(output_controller,"if request.method=='POST':");
+                    fprintf(output_controller,"\n\t\texempĺo = %s(request.form['nome'])",nomeModel);
+                    fprintf(output_controller,"\n\t\tdb.session.add(exemplo)\n\t\tdb.session.commit()");
+                            }
+                 | DELETEBANCO IDENTIFIER
+                 | UPDATEBANCO IDENTIFIER
+                 | READBANCO IDENTIFIER{
+                  fprintf(output_controller,"\ndef %s():\n\t",$2);
+                  fprintf(output_controller,"\n\tusuario = %s.query.all()",nomeModel);
+                 }
+                 ;
+
+return_declaration :  TEMPLATE {fprintf(output_controller,"\n\treturn render_template("")\n");}
+                    | REDIRECT {fprintf(output_controller,"\n\treturn redirect(url_for())\n");}
+
+arguments : IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$1);}
+            |CRIE operation_banco RETURN return_declaration
+            ;
+
+function_declation : FUNC CONTROLLER arguments 
+                    //|FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);} arguments
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
 ;
 
@@ -121,7 +146,6 @@ controller_declaration : CRIE CONTROLLER IDENTIFIER{
 
 %%
 
-
 main( int argc, char *argv[] )
 {
   output_model= fopen("output_model.py", "w");
@@ -137,6 +161,3 @@ yyerror (char *s) /* Called by yyparse on error */
 {
   printf ("%s  na linha %d\n", s, yylineno );
 }
-
-
-
