@@ -81,7 +81,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 17 "parser.y" /* yacc.c:1909  */
+#line 19 "parser.y" /* yacc.c:1909  */
 
 	char * ystr;
 	int   yint;

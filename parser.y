@@ -8,6 +8,8 @@ extern VAR *SymTab;
 int semerro=0;
 int asController = 0;
 char nomeModel[100];
+char idModel[100];
+int onRoute = 0;
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
 FILE * output_model;
@@ -19,6 +21,7 @@ FILE * output_controller;
 	int   yint;
 	}
 %start program
+
 %token CRIE
 %token MODEL CONTROLLER VIEW
 %token CAMPO RELACAO
@@ -70,9 +73,14 @@ null : {fprintf(output_model,")\n");}
       | ',' NULO{fprintf(output_model,", nullable = False)\n");}
       ;
 
+specciais : key null| null key ;
+
 model_declaration : CRIE MODEL IDENTIFIER {
                         asController = 0;
-                        fprintf(output_model,"class %s (db.Model):\n",$3);
+                        fprintf(output_model,"import sqlalchemy as sa\n");
+                        fprintf(output_model,"from flask_sqlalchemy import SQLAlchemy\n");
+                        fprintf(output_model,"\ndb = SQLAlchemy()\n");
+                        fprintf(output_model,"\nclass %s (db.Model):\n",$3);
                         strcpy(nomeModel,$3);
                     }
                   ;
@@ -81,6 +89,10 @@ field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {
                           if (asController == 0){
                               fprintf(output_model,"\t%s = sa.Column(sa.%s",$3,$5);
                               AddVAR($3,$5);
+                          }
+                          //printf("\n%s / %d", $3, strcmp($3,"id") );
+                          if (strcmp($3,"id") == 0){
+                            strcpy(idModel,$3);
                           }
                           } key null
 ;
@@ -104,12 +116,20 @@ operation_banco :  ADDBANCO IDENTIFIER {
                     fprintf(output_controller,"if request.method=='POST':");
                     fprintf(output_controller,"\n\t\texempĺo = %s(request.form['nome'])",nomeModel);
                     fprintf(output_controller,"\n\t\tdb.session.add(exemplo)\n\t\tdb.session.commit()");
-                            }
-                 | DELETEBANCO IDENTIFIER
-                 | UPDATEBANCO IDENTIFIER
+                  }
+                 | DELETEBANCO IDENTIFIER{
+                    fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
+                    fprintf(output_controller,"exemplo = %s.query.get(%s)",nomeModel,idModel);
+                 }
+                 | UPDATEBANCO IDENTIFIER{
+                   fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
+                   fprintf(output_controller,"exempĺo = %s.query.get(%s)\n",nomeModel,idModel);
+                   fprintf(output_controller,"\tif request.method == 'POST':\n");
+                   fprintf(output_controller,"\t\texemplo.nome = request.form['nome']\n\t\tdb.session()");
+                 }
                  | READBANCO IDENTIFIER{
-                  fprintf(output_controller,"\ndef %s():\n\t",$2);
-                  fprintf(output_controller,"\n\tusuario = %s.query.all()",nomeModel);
+                  fprintf(output_controller,"\ndef %s():\n",$2);
+                  fprintf(output_controller,"\n\tusuario = %s.query.all(%s)",nomeModel,idModel);
                  }
                  ;
 
@@ -120,13 +140,18 @@ arguments : IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\t
             |CRIE operation_banco RETURN return_declaration
             ;
 
-function_declation : FUNC CONTROLLER arguments 
+function_declation : FUNC CONTROLLER arguments
                     //|FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);} arguments
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
 ;
 
 // Para caso se crie endpoints maiores
-other_identifier : {fprintf(output_controller,"')");}
+other_identifier : { if(strcmp(idModel,"id") == 0){
+                      fprintf(output_controller,"/<int:%s>')",idModel);  
+                      }else{
+                        fprintf(output_controller,"')");
+                      }
+                      }
                   | IDENTIFIER {fprintf(output_controller,"/%s",$1);} other_identifier
                    
 ;
@@ -141,6 +166,8 @@ route_declation : CRIE ROUTE IDENTIFIER {
 controller_declaration : CRIE CONTROLLER IDENTIFIER{
                           asController = 1;
                           fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
+                          fprintf(output_controller,"from output_model import db, %s\n",nomeModel);
+                          
 
 };
 

@@ -73,12 +73,14 @@ extern VAR *SymTab;
 int semerro=0;
 int asController = 0;
 char nomeModel[100];
+char idModel[100];
+int onRoute = 0;
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
 FILE * output_model;
 FILE * output_controller;
 
-#line 82 "parser.tab.c" /* yacc.c:339  */
+#line 84 "parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -149,13 +151,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 17 "parser.y" /* yacc.c:355  */
+#line 19 "parser.y" /* yacc.c:355  */
 
 	char * ystr;
 	int   yint;
 	
 
-#line 159 "parser.tab.c" /* yacc.c:355  */
+#line 161 "parser.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -172,7 +174,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 176 "parser.tab.c" /* yacc.c:358  */
+#line 178 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -472,11 +474,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    36,    36,    39,    40,    41,    42,    45,    46,    47,
-      48,    49,    50,    53,    62,    63,    65,    66,    69,    70,
-      73,    80,    80,    88,    89,    90,    91,    92,    93,    96,
-     102,   108,   109,   110,   116,   117,   119,   120,   123,   125,
-     129,   130,   130,   135,   135,   141
+       0,    39,    39,    42,    43,    44,    45,    48,    49,    50,
+      51,    52,    53,    56,    65,    66,    68,    69,    72,    73,
+      78,    88,    88,   100,   101,   102,   103,   104,   105,   108,
+     114,   120,   124,   130,   136,   137,   139,   140,   143,   145,
+     149,   155,   155,   160,   160,   166
 };
 #endif
 
@@ -1297,7 +1299,7 @@ yyreduce:
   switch (yyn)
     {
         case 13:
-#line 53 "parser.y" /* yacc.c:1646  */
+#line 56 "parser.y" /* yacc.c:1646  */
     {
       if (asController == 0){
         fprintf(output_model,"%s\n",(yyvsp[0].ystr));
@@ -1306,189 +1308,223 @@ yyreduce:
       }
       
 }
-#line 1310 "parser.tab.c" /* yacc.c:1646  */
+#line 1312 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 62 "parser.y" /* yacc.c:1646  */
+#line 65 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,")\n");}
-#line 1316 "parser.tab.c" /* yacc.c:1646  */
+#line 1318 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 63 "parser.y" /* yacc.c:1646  */
+#line 66 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,", sa.ForeignKey(%s.%s), primary_key=True",(yyvsp[-4].ystr),(yyvsp[-2].ystr));}
-#line 1322 "parser.tab.c" /* yacc.c:1646  */
+#line 1324 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 65 "parser.y" /* yacc.c:1646  */
+#line 68 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,", primary_key=True");}
-#line 1328 "parser.tab.c" /* yacc.c:1646  */
+#line 1330 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 66 "parser.y" /* yacc.c:1646  */
+#line 69 "parser.y" /* yacc.c:1646  */
     { fprintf(output_model,",sa.ForeignKey(%s.%s)",(yyvsp[-2].ystr),(yyvsp[0].ystr));}
-#line 1334 "parser.tab.c" /* yacc.c:1646  */
+#line 1336 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 69 "parser.y" /* yacc.c:1646  */
+#line 72 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,")\n");}
-#line 1340 "parser.tab.c" /* yacc.c:1646  */
+#line 1342 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 70 "parser.y" /* yacc.c:1646  */
+#line 73 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,", nullable = False)\n");}
-#line 1346 "parser.tab.c" /* yacc.c:1646  */
+#line 1348 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 73 "parser.y" /* yacc.c:1646  */
+#line 78 "parser.y" /* yacc.c:1646  */
     {
                         asController = 0;
-                        fprintf(output_model,"class %s (db.Model):\n",(yyvsp[0].ystr));
+                        fprintf(output_model,"import sqlalchemy as sa\n");
+                        fprintf(output_model,"from flask_sqlalchemy import SQLAlchemy\n");
+                        fprintf(output_model,"\ndb = SQLAlchemy()\n");
+                        fprintf(output_model,"\nclass %s (db.Model):\n",(yyvsp[0].ystr));
                         strcpy(nomeModel,(yyvsp[0].ystr));
                     }
-#line 1356 "parser.tab.c" /* yacc.c:1646  */
+#line 1361 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 80 "parser.y" /* yacc.c:1646  */
+#line 88 "parser.y" /* yacc.c:1646  */
     {
                           if (asController == 0){
                               fprintf(output_model,"\t%s = sa.Column(sa.%s",(yyvsp[-2].ystr),(yyvsp[0].ystr));
                               AddVAR((yyvsp[-2].ystr),(yyvsp[0].ystr));
                           }
+                          //printf("\n%s / %d", $3, strcmp($3,"id") );
+                          if (strcmp((yyvsp[-2].ystr),"id") == 0){
+                            strcpy(idModel,(yyvsp[-2].ystr));
                           }
-#line 1367 "parser.tab.c" /* yacc.c:1646  */
+                          }
+#line 1376 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 88 "parser.y" /* yacc.c:1646  */
+#line 100 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="String";}
-#line 1373 "parser.tab.c" /* yacc.c:1646  */
+#line 1382 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 89 "parser.y" /* yacc.c:1646  */
+#line 101 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Integer";}
-#line 1379 "parser.tab.c" /* yacc.c:1646  */
+#line 1388 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 90 "parser.y" /* yacc.c:1646  */
+#line 102 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Float";}
-#line 1385 "parser.tab.c" /* yacc.c:1646  */
+#line 1394 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 91 "parser.y" /* yacc.c:1646  */
+#line 103 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Date";}
-#line 1391 "parser.tab.c" /* yacc.c:1646  */
+#line 1400 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 92 "parser.y" /* yacc.c:1646  */
+#line 104 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Boolean";}
-#line 1397 "parser.tab.c" /* yacc.c:1646  */
+#line 1406 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 93 "parser.y" /* yacc.c:1646  */
+#line 105 "parser.y" /* yacc.c:1646  */
     {(yyval.ystr)="Text";}
-#line 1403 "parser.tab.c" /* yacc.c:1646  */
+#line 1412 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 96 "parser.y" /* yacc.c:1646  */
+#line 108 "parser.y" /* yacc.c:1646  */
     {
                 if (asController == 0){
                   fprintf(output_model,"\t%s = db.relanshionship('%s')",(yyvsp[-2].ystr),(yyvsp[0].ystr));
                 }
 }
-#line 1413 "parser.tab.c" /* yacc.c:1646  */
+#line 1422 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 102 "parser.y" /* yacc.c:1646  */
+#line 114 "parser.y" /* yacc.c:1646  */
     {
                     fprintf(output_controller,"\ndef %s():\n\t",(yyvsp[0].ystr));
                     fprintf(output_controller,"if request.method=='POST':");
                     fprintf(output_controller,"\n\t\texempĺo = %s(request.form['nome'])",nomeModel);
                     fprintf(output_controller,"\n\t\tdb.session.add(exemplo)\n\t\tdb.session.commit()");
-                            }
-#line 1424 "parser.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 33:
-#line 110 "parser.y" /* yacc.c:1646  */
-    {
-                  fprintf(output_controller,"\ndef %s():\n\t",(yyvsp[0].ystr));
-                  fprintf(output_controller,"\n\tusuario = %s.query.all()",nomeModel);
-                 }
+                  }
 #line 1433 "parser.tab.c" /* yacc.c:1646  */
     break;
 
+  case 31:
+#line 120 "parser.y" /* yacc.c:1646  */
+    {
+                    fprintf(output_controller,"\ndef %s(%s):\n\t",(yyvsp[0].ystr),idModel);
+                    fprintf(output_controller,"exemplo = %s.query.get(%s)",nomeModel,idModel);
+                 }
+#line 1442 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 124 "parser.y" /* yacc.c:1646  */
+    {
+                   fprintf(output_controller,"\ndef %s(%s):\n\t",(yyvsp[0].ystr),idModel);
+                   fprintf(output_controller,"exempĺo = %s.query.get(%s)\n",nomeModel,idModel);
+                   fprintf(output_controller,"\tif request.method == 'POST':\n");
+                   fprintf(output_controller,"\t\texemplo.nome = request.form['nome']\n\t\tdb.session()");
+                 }
+#line 1453 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 130 "parser.y" /* yacc.c:1646  */
+    {
+                  fprintf(output_controller,"\ndef %s():\n",(yyvsp[0].ystr));
+                  fprintf(output_controller,"\n\tusuario = %s.query.all(%s)",nomeModel,idModel);
+                 }
+#line 1462 "parser.tab.c" /* yacc.c:1646  */
+    break;
+
   case 34:
-#line 116 "parser.y" /* yacc.c:1646  */
+#line 136 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"\n\treturn render_template("")\n");}
-#line 1439 "parser.tab.c" /* yacc.c:1646  */
+#line 1468 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 117 "parser.y" /* yacc.c:1646  */
+#line 137 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"\n\treturn redirect(url_for())\n");}
-#line 1445 "parser.tab.c" /* yacc.c:1646  */
+#line 1474 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 119 "parser.y" /* yacc.c:1646  */
+#line 139 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",(yyvsp[0].ystr));}
-#line 1451 "parser.tab.c" /* yacc.c:1646  */
+#line 1480 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 125 "parser.y" /* yacc.c:1646  */
+#line 145 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",(yyvsp[0].ystr));}
-#line 1457 "parser.tab.c" /* yacc.c:1646  */
+#line 1486 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 129 "parser.y" /* yacc.c:1646  */
-    {fprintf(output_controller,"')");}
-#line 1463 "parser.tab.c" /* yacc.c:1646  */
+#line 149 "parser.y" /* yacc.c:1646  */
+    { if(strcmp(idModel,"id") == 0){
+                      fprintf(output_controller,"/<int:%s>')",idModel);  
+                      }else{
+                        fprintf(output_controller,"')");
+                      }
+                      }
+#line 1497 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 130 "parser.y" /* yacc.c:1646  */
+#line 155 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"/%s",(yyvsp[0].ystr));}
-#line 1469 "parser.tab.c" /* yacc.c:1646  */
+#line 1503 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 135 "parser.y" /* yacc.c:1646  */
+#line 160 "parser.y" /* yacc.c:1646  */
     {
               if (asController == 1)
                 fprintf(output_controller,"\n@app.route('/%s",(yyvsp[0].ystr));
               }
-#line 1478 "parser.tab.c" /* yacc.c:1646  */
+#line 1512 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 141 "parser.y" /* yacc.c:1646  */
+#line 166 "parser.y" /* yacc.c:1646  */
     {
                           asController = 1;
                           fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
+                          fprintf(output_controller,"from output_model import db, %s\n",nomeModel);
+                          
 
 }
-#line 1488 "parser.tab.c" /* yacc.c:1646  */
+#line 1524 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1492 "parser.tab.c" /* yacc.c:1646  */
+#line 1528 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1716,7 +1752,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 147 "parser.y" /* yacc.c:1906  */
+#line 174 "parser.y" /* yacc.c:1906  */
 
 
 main( int argc, char *argv[] )

@@ -1,8 +1,19 @@
+Nonterminals useless in grammar
+
+   specciais
+
+
 Terminals unused in grammar
 
    VIEW
    NUMINT
    TIME
+
+
+Rules useless in grammar
+
+   45 specciais: key null
+   46          | null key
 
 
 State 58 conflicts: 1 shift/reduce
