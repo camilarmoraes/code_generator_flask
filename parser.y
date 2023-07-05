@@ -27,9 +27,9 @@ FILE * output_controller;
 %token CAMPO RELACAO
 
 %token <yint> NUMINT
-%token <ystr> IDENTIFIER COMENTARIO NULO
+%token <ystr> IDENTIFIER COMENTARIO NULO COMMENT_BLOCK
 %token INTEGER STRING FLOAT DATE TIME BOOL TEXT
-%token ROUTE FUNC RETURN
+%token ROUTE FUNC RETURN SPECIAL
 %token PK FK REDIRECT TEMPLATE
 %token ADDBANCO DELETEBANCO UPDATEBANCO READBANCO
 %type <ystr> type_specifier 
@@ -58,22 +58,31 @@ comentario_declaration : COMENTARIO {
         fprintf(output_model,"%s\n",$1);
       }else{
         fprintf(output_controller,"%s\n",$1);
+      }}
+      |  COMMENT_BLOCK {
+        if (asController == 0){ 
+        fprintf(output_model,"%s\n",$1);
+      }else{
+        fprintf(output_controller,"%s\n",$1);
+      }
       }
       
-};
+;
 
-key : { fprintf(output_model,")\n");}
+key : { fprintf(output_model,"");}
     | ',' FK  '=' IDENTIFIER '.' IDENTIFIER ',' PK{fprintf(output_model,", sa.ForeignKey(%s.%s), primary_key=True",$4,$6);}
-  //  | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER {ASSERT((NULL),"A FK deve ser declarada antes da PK!");}
+    | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER {ASSERT((NULL),"A FK deve ser declarada antes da PK");}
     | ',' PK{ fprintf(output_model,", primary_key=True");}
     | ',' FK '=' IDENTIFIER '.' IDENTIFIER { fprintf(output_model,",sa.ForeignKey(%s.%s)",$4,$6);}
 ;
 
-null : {fprintf(output_model,")\n");}
-      | ',' NULO{fprintf(output_model,", nullable = False)\n");}
+null : {fprintf(output_model,"");}
+      | ',' NULO{fprintf(output_model,", nullable = False");}
       ;
 
-specciais : key null| null key ;
+specciais : key null { fprintf(output_model,")\n");}
+          | null key { ASSERT((NULL),"O null é um argumento-chave, posicione corretamente!");} 
+          ;
 
 model_declaration : CRIE MODEL IDENTIFIER {
                         asController = 0;
@@ -94,10 +103,10 @@ field_declaration : CRIE CAMPO IDENTIFIER ':' type_specifier {
                           if (strcmp($3,"id") == 0){
                             strcpy(idModel,$3);
                           }
-                          } key null
+                          } specciais
 ;
 
-type_specifier : STRING {$$="String";}
+type_specifier : STRING {$$="String(200)";}
                 |INTEGER {$$="Integer";}
                 |FLOAT {$$="Float";}
                 |DATE {$$="Date";}
@@ -107,59 +116,88 @@ type_specifier : STRING {$$="String";}
 
 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER{
                 if (asController == 0){
-                  fprintf(output_model,"\t%s = db.relanshionship('%s')",$3,$5);
+                  fprintf(output_model,"\t%s = db.relanshionship('%s')\n",$3,$5);
                 }
 }; 
 
 operation_banco :  ADDBANCO IDENTIFIER {
-                    fprintf(output_controller,"\ndef %s():\n\t",$2);
-                    fprintf(output_controller,"if request.method=='POST':");
-                    fprintf(output_controller,"\n\t\texempĺo = %s(request.form['nome'])",nomeModel);
-                    fprintf(output_controller,"\n\t\tdb.session.add(exemplo)\n\t\tdb.session.commit()");
+                    if(onRoute == 1 ){
+                      fprintf(output_controller,"\ndef %s():\n\t",$2);
+                      fprintf(output_controller,"if request.method=='POST':");
+                      fprintf(output_controller,"\n\t\texempĺo = %s(request.form['nome'])",nomeModel);
+                      fprintf(output_controller,"\n\t\tdb.session.add(exemplo)\n\t\tdb.session.commit()");
+                    }else{
+                      ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
+                    }
+                    
                   }
                  | DELETEBANCO IDENTIFIER{
+                  if(onRoute == 1 ){
                     fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
                     fprintf(output_controller,"exemplo = %s.query.get(%s)",nomeModel,idModel);
+                    }else{
+                      ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
+                    }
                  }
                  | UPDATEBANCO IDENTIFIER{
+                  if(onRoute == 1 ){
                    fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
                    fprintf(output_controller,"exempĺo = %s.query.get(%s)\n",nomeModel,idModel);
                    fprintf(output_controller,"\tif request.method == 'POST':\n");
                    fprintf(output_controller,"\t\texemplo.nome = request.form['nome']\n\t\tdb.session()");
+                   }else{
+                      ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
+                    }
                  }
                  | READBANCO IDENTIFIER{
+                  if(onRoute == 1 ){
                   fprintf(output_controller,"\ndef %s():\n",$2);
                   fprintf(output_controller,"\n\tusuario = %s.query.all(%s)",nomeModel,idModel);
+                  }else{
+                      ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
+                    }
                  }
                  ;
 
 return_declaration :  TEMPLATE {fprintf(output_controller,"\n\treturn render_template("")\n");}
                     | REDIRECT {fprintf(output_controller,"\n\treturn redirect(url_for())\n");}
 
-arguments : IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$1);}
+arguments : IDENTIFIER{
+            if(onRoute == 1){
+              fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$1);
+            }else{
+              ASSERT((NULL),"Deve ser especificado alguma rota!");
+            }
+            onRoute = 0;}
             |CRIE operation_banco RETURN return_declaration
             ;
 
-function_declation : FUNC CONTROLLER arguments
+function_declation : FUNC CONTROLLER  arguments
                     //|FUNC CONTROLLER IDENTIFIER{fprintf(output_controller,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);} arguments
                     |FUNC MODEL IDENTIFIER{fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",$3);}
 ;
 
 // Para caso se crie endpoints maiores
-other_identifier : { if(strcmp(idModel,"id") == 0){
-                      fprintf(output_controller,"/<int:%s>')",idModel);  
-                      }else{
-                        fprintf(output_controller,"')");
-                      }
-                      }
+other_identifier : { fprintf(output_controller,"')");}
                   | IDENTIFIER {fprintf(output_controller,"/%s",$1);} other_identifier
                    
 ;
-
 // PARTES DO CONTROLLER 
-route_declation : CRIE ROUTE IDENTIFIER {
-              if (asController == 1)
-                fprintf(output_controller,"\n@app.route('/%s",$3);
+route_declation : CRIE ROUTE SPECIAL IDENTIFIER {
+              onRoute = 1;
+              if (asController == 1 && strcmp(idModel,"id") == 0)
+                fprintf(output_controller,"\n@app.route('/%s/<int:%s>",$4,idModel);
+              else{
+                ASSERT((NULL),"Problema no modelo");
+              }
+              } other_identifier
+              | CRIE ROUTE IDENTIFIER{
+                onRoute = 1;
+                if(asController == 1)
+                  fprintf(output_controller,"\n@app.route('/%s",$3);
+                else{
+                  ASSERT((NULL),"Problema no modelo");
+                }
               } other_identifier
 ;
 
@@ -180,7 +218,7 @@ main( int argc, char *argv[] )
 
   init_stringpool(10000);
   if ( yyparse () == 0 && semerro==0 ) printf("codigo sem erros");
-  imprimi();
+  //imprimi();
 
 }
 

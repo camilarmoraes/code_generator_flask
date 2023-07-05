@@ -9,46 +9,49 @@ ID       [_a-zA-Z][_A-Za-z0-9]*
 
 %%
 
-{DIGIT}+      {     printf("inteiro "); yylval.yint = atoi(yytext);  return(NUMINT); }
+{DIGIT}+      {      yylval.yint = atoi(yytext);  return(NUMINT); }
 
-crie          {     printf("crie"); return(CRIE);}
+crie          {      return(CRIE);}
 
-model         {     printf("model"); return(MODEL);}
-controller    {     printf("controller"); return(CONTROLLER);}
-view          {     printf("view"); return(VIEW);}
+model         {      return(MODEL);}
+controller    {      return(CONTROLLER);}
+view          {      return(VIEW);}
 
-campo         {     printf("campo"); return(CAMPO);}
-relacao       {     printf("relação"); return(RELACAO);}
+campo         {      return(CAMPO);}
+relacao       {     return(RELACAO);}
 
-Integer       {     printf("inteiro"); return(INTEGER);}
-String        {     printf("string"); return(STRING);}
-Float         {     printf("float"); return(FLOAT);}
-Boolean       {     printf("bool"); return(BOOL);}
-Datetime      {     printf("data"); return(DATE);}
-Time          {     printf("time"); return(TIME);}
-Text          {     printf("texto"); return(TEXT);}
+Integer       {      return(INTEGER);}
+String        {      return(STRING);}
+Float         {      return(FLOAT);}
+Boolean       {      return(BOOL);}
+Datetime      {      return(DATE);}
+Time          {      return(TIME);}
+Text          {      return(TEXT);}
 
-rota          {     printf("rota"); return(ROUTE);}
-func          {     printf("função"); return(FUNC);}
-retorne       {     printf("return"); return(RETURN);}
-template      {     printf("template"); return(TEMPLATE);}
-redirecionar  {     printf("redirecionar"); return(REDIRECT);}
+rota          {      return(ROUTE);}
+func          {      return(FUNC);}
+retorne       {      return(RETURN);}
+template      {      return(TEMPLATE);}
+redirecionar  {      return(REDIRECT);}
 
-FK            {     printf(""); return(FK);}
-PK            {     printf(""); return(PK);}
-nulo          {     printf(""); return(NULO);}
+FK            {     return(FK);}
+PK            {      return(PK);}
+nulo          {      return(NULO);}
+special        {     return(SPECIAL);}
+addbanco       {    return(ADDBANCO);}
+deletebanco    {     return(DELETEBANCO);}
+readbanco      {    return(READBANCO);}
+updatebanco    {    return(UPDATEBANCO);}
 
-addbanco       {    printf("addbanco"); return(ADDBANCO);}
-deletebanco    {    printf("deletebanco"); return(DELETEBANCO);}
-readbanco      {    printf("readbanco"); return(READBANCO);}
-updatebanco    {    printf("updatebanco"); return(UPDATEBANCO);}
+
 
 {ID}+         {     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
 "#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO);} 
+"#"[^#]*"#"    { return (COMMENT_BLOCK); }
 
 
-"\n"          {     printf("\n");}
+"\n"          {     }
 [ \t]+ /* blank, tab, new line: eat up whitespace */
-.             {     printf("%c",yytext[0]); return(yytext[0]); }
+.             {      return(yytext[0]); }
 
 %%
