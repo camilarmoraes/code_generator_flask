@@ -6,8 +6,6 @@ Terminals unused in grammar
 
 
 State 62 conflicts: 1 shift/reduce, 2 reduce/reduce
-State 74 conflicts: 1 shift/reduce
-State 87 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -32,10 +30,10 @@ Grammar
    13                       | COMMENT_BLOCK
 
    14 key: %empty
-   15    | ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' PK
-   16    | ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER
-   17    | ',' PK
-   18    | ',' FK '=' IDENTIFIER '.' IDENTIFIER
+   15    | ',' FK '=' IDENTIFIER '.' IDENTIFIER
+   16    | ',' PK
+   17    | ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' PK
+   18    | ',' PK '-' FK '=' IDENTIFIER '.' IDENTIFIER
 
    19 null: %empty
    20     | ',' NULO
@@ -93,10 +91,11 @@ Terminals, with rules where they appear
 
 $end (0) 0
 ',' (44) 15 16 17 18 20
-'.' (46) 15 16 18
+'-' (45) 17 18
+'.' (46) 15 17 18
 ':' (58) 25 32
 ';' (59) 2 3
-'=' (61) 15 16 18
+'=' (61) 15 17 18
 error (256)
 CRIE (258) 23 25 32 40 47 49 50
 MODEL (259) 23 42
@@ -105,7 +104,7 @@ VIEW (261)
 CAMPO (262) 25
 RELACAO (263) 32
 NUMINT (264)
-IDENTIFIER (265) 15 16 18 23 25 32 33 34 35 36 39 42 45 47 49 50
+IDENTIFIER (265) 15 17 18 23 25 32 33 34 35 36 39 42 45 47 49 50
 COMENTARIO (266) 12
 NULO (267) 20
 COMMENT_BLOCK (268) 13
@@ -120,8 +119,8 @@ ROUTE (276) 47 49
 FUNC (277) 41 42
 RETURN (278) 40
 SPECIAL (279) 47
-PK (280) 15 16 17
-FK (281) 15 16 18
+PK (280) 16 17 18
+FK (281) 15 17 18
 REDIRECT (282) 38
 TEMPLATE (283) 37
 ADDBANCO (284) 33
@@ -132,51 +131,51 @@ READBANCO (287) 36
 
 Nonterminals, with rules where they appear
 
-$accept (38)
+$accept (39)
     on left: 0
-program (39)
+program (40)
     on left: 1, on right: 0
-statements (40)
+statements (41)
     on left: 2 3 4 5, on right: 1 3 4
-statement (41)
+statement (42)
     on left: 6 7 8 9 10 11, on right: 2 3
-comentario_declaration (42)
+comentario_declaration (43)
     on left: 12 13, on right: 4 5
-key (43)
+key (44)
     on left: 14 15 16 17 18, on right: 21 22
-null (44)
+null (45)
     on left: 19 20, on right: 21 22
-specciais (45)
+specciais (46)
     on left: 21 22, on right: 25
-model_declaration (46)
+model_declaration (47)
     on left: 23, on right: 6
-field_declaration (47)
+field_declaration (48)
     on left: 25, on right: 8
-$@1 (48)
+$@1 (49)
     on left: 24, on right: 25
-type_specifier (49)
+type_specifier (50)
     on left: 26 27 28 29 30 31, on right: 25
-relation_declaration (50)
+relation_declaration (51)
     on left: 32, on right: 11
-operation_banco (51)
+operation_banco (52)
     on left: 33 34 35 36, on right: 40
-return_declaration (52)
+return_declaration (53)
     on left: 37 38, on right: 40
-arguments (53)
+arguments (54)
     on left: 39 40, on right: 41
-function_declation (54)
+function_declation (55)
     on left: 41 42, on right: 10
-other_identifier (55)
+other_identifier (56)
     on left: 43 45, on right: 45 47 49
-$@2 (56)
+$@2 (57)
     on left: 44, on right: 45
-route_declation (57)
+route_declation (58)
     on left: 47 49, on right: 9
-$@3 (58)
+$@3 (59)
     on left: 46, on right: 47
-$@4 (59)
+$@4 (60)
     on left: 48, on right: 49
-controller_declaration (60)
+controller_declaration (61)
     on left: 50, on right: 7
 
 
@@ -749,10 +748,10 @@ State 67
 
 State 68
 
-   15 key: ',' . FK '=' IDENTIFIER '.' IDENTIFIER ',' PK
-   16    | ',' . PK ',' FK '=' IDENTIFIER '.' IDENTIFIER
-   17    | ',' . PK
-   18    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   15 key: ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   16    | ',' . PK
+   17    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER '-' PK
+   18    | ',' . PK '-' FK '=' IDENTIFIER '.' IDENTIFIER
    20 null: ',' . NULO
 
     NULO  shift, and go to state 73
@@ -805,19 +804,18 @@ State 73
 
 State 74
 
-   16 key: ',' PK . ',' FK '=' IDENTIFIER '.' IDENTIFIER
-   17    | ',' PK .
+   16 key: ',' PK .
+   18    | ',' PK . '-' FK '=' IDENTIFIER '.' IDENTIFIER
 
-    ','  shift, and go to state 80
+    '-'  shift, and go to state 80
 
-    ','       [reduce using rule 17 (key)]
-    $default  reduce using rule 17 (key)
+    $default  reduce using rule 16 (key)
 
 
 State 75
 
-   15 key: ',' FK . '=' IDENTIFIER '.' IDENTIFIER ',' PK
-   18    | ',' FK . '=' IDENTIFIER '.' IDENTIFIER
+   15 key: ',' FK . '=' IDENTIFIER '.' IDENTIFIER
+   17    | ',' FK . '=' IDENTIFIER '.' IDENTIFIER '-' PK
 
     '='  shift, and go to state 81
 
@@ -838,10 +836,10 @@ State 77
 
 State 78
 
-   15 key: ',' . FK '=' IDENTIFIER '.' IDENTIFIER ',' PK
-   16    | ',' . PK ',' FK '=' IDENTIFIER '.' IDENTIFIER
-   17    | ',' . PK
-   18    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   15 key: ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   16    | ',' . PK
+   17    | ',' . FK '=' IDENTIFIER '.' IDENTIFIER '-' PK
+   18    | ',' . PK '-' FK '=' IDENTIFIER '.' IDENTIFIER
 
     PK  shift, and go to state 74
     FK  shift, and go to state 75
@@ -856,90 +854,89 @@ State 79
 
 State 80
 
-   16 key: ',' PK ',' . FK '=' IDENTIFIER '.' IDENTIFIER
+   18 key: ',' PK '-' . FK '=' IDENTIFIER '.' IDENTIFIER
 
     FK  shift, and go to state 82
 
 
 State 81
 
-   15 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER ',' PK
-   18    | ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+   15 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+   17    | ',' FK '=' . IDENTIFIER '.' IDENTIFIER '-' PK
 
     IDENTIFIER  shift, and go to state 83
 
 
 State 82
 
-   16 key: ',' PK ',' FK . '=' IDENTIFIER '.' IDENTIFIER
+   18 key: ',' PK '-' FK . '=' IDENTIFIER '.' IDENTIFIER
 
     '='  shift, and go to state 84
 
 
 State 83
 
-   15 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER ',' PK
-   18    | ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+   15 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+   17    | ',' FK '=' IDENTIFIER . '.' IDENTIFIER '-' PK
 
     '.'  shift, and go to state 85
 
 
 State 84
 
-   16 key: ',' PK ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+   18 key: ',' PK '-' FK '=' . IDENTIFIER '.' IDENTIFIER
 
     IDENTIFIER  shift, and go to state 86
 
 
 State 85
 
-   15 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER ',' PK
-   18    | ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+   15 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+   17    | ',' FK '=' IDENTIFIER '.' . IDENTIFIER '-' PK
 
     IDENTIFIER  shift, and go to state 87
 
 
 State 86
 
-   16 key: ',' PK ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+   18 key: ',' PK '-' FK '=' IDENTIFIER . '.' IDENTIFIER
 
     '.'  shift, and go to state 88
 
 
 State 87
 
-   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER . ',' PK
-   18    | ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+   17    | ',' FK '=' IDENTIFIER '.' IDENTIFIER . '-' PK
 
-    ','  shift, and go to state 89
+    '-'  shift, and go to state 89
 
-    ','       [reduce using rule 18 (key)]
-    $default  reduce using rule 18 (key)
+    $default  reduce using rule 15 (key)
 
 
 State 88
 
-   16 key: ',' PK ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+   18 key: ',' PK '-' FK '=' IDENTIFIER '.' . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 90
 
 
 State 89
 
-   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' . PK
+   17 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' . PK
 
     PK  shift, and go to state 91
 
 
 State 90
 
-   16 key: ',' PK ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+   18 key: ',' PK '-' FK '=' IDENTIFIER '.' IDENTIFIER .
 
-    $default  reduce using rule 16 (key)
+    $default  reduce using rule 18 (key)
 
 
 State 91
 
-   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER ',' PK .
+   17 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' PK .
 
-    $default  reduce using rule 15 (key)
+    $default  reduce using rule 17 (key)

@@ -6,7 +6,7 @@ char *stringpools(char *);
 
 DIGIT    [0-9]
 ID       [_a-zA-Z][_A-Za-z0-9]*
-
+CI       [A-Za-z0-9_ \n]*
 %%
 
 {DIGIT}+      {      yylval.yint = atoi(yytext);  return(NUMINT); }
@@ -33,10 +33,10 @@ func          {      return(FUNC);}
 retorne       {      return(RETURN);}
 template      {      return(TEMPLATE);}
 redirecionar  {      return(REDIRECT);}
-
+nulo          {      return(NULO);}
 FK            {     return(FK);}
 PK            {      return(PK);}
-nulo          {      return(NULO);}
+
 special        {     return(SPECIAL);}
 addbanco       {    return(ADDBANCO);}
 deletebanco    {     return(DELETEBANCO);}
@@ -46,8 +46,8 @@ updatebanco    {    return(UPDATEBANCO);}
 
 
 {ID}+         {     yylval.ystr = stringpool(yytext); return(IDENTIFIER);}
-"#".*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO);} 
-"#"[^#]*"#"    { return (COMMENT_BLOCK); }
+[#].*         {     yylval.ystr = stringpool(yytext); return(COMENTARIO);} 
+["""]{CI}["""] {     yylval.ystr = stringpool(yytext); return (COMMENT_BLOCK);}    
 
 
 "\n"          {     }
