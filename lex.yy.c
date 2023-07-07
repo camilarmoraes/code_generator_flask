@@ -938,7 +938,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 21 "scanner.l"
-{     return(RELACAO);}
+{      return(RELACAO);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP

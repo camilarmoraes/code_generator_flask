@@ -18,7 +18,7 @@ controller    {      return(CONTROLLER);}
 view          {      return(VIEW);}
 
 campo         {      return(CAMPO);}
-relacao       {     return(RELACAO);}
+relacao       {      return(RELACAO);}
 
 Integer       {      return(INTEGER);}
 String        {      return(STRING);}

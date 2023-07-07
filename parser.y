@@ -14,7 +14,7 @@ int routeSpecial = 0; // flag para verificar se a rota criada é uma rota especi
 int checkImportModel = 0; // flag para verificar se já houve importação das bibliotecas para o model
 int checkImportController; // flag para verificar se já houve importação das bibliotecas para o controller
 int nulo = 0; // flag que verifica se o token NULO foi acionado
-
+int create, update, delete, read = 0;
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
 
@@ -169,21 +169,21 @@ relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER{
 // OPERAÇÕES BÁSICAS PELO BANCO DE DADOS
 operation_banco :  ADDBANCO IDENTIFIER {
                     if(onRoute == 1 ){
-                      fprintf(output_controller,"\ndef %s():\n\t",$2);
+                      fprintf(output_controller,"\ndef create():\n\t");
                       fprintf(output_controller,"if request.method=='POST':");
                       fprintf(output_controller,"\n\t\t_ex = %s(request.form['__ex'])",nomeModel);
                       fprintf(output_controller,"\n\t\tdb.session.add(_ex)\n\t\tdb.session.commit()");
                     }else{
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
-                    
+                    create = 1;
                   }
                  | DELETEBANCO IDENTIFIER{
                   if(onRoute == 1 ){
                     // AS ROTAS ESPECIAIS SÃO AQUELAS QUE NECESSITAM DE ALGUM VALOR CHAVE
                     // PROVENIENTE DO MODEL.
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
+                      fprintf(output_controller,"\ndef delete_banco(%s):\n\t",idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                     fprintf(output_controller,"_ex = %s.query.get(%s)\n",nomeModel,idModel);
@@ -193,11 +193,12 @@ operation_banco :  ADDBANCO IDENTIFIER {
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    delete = 1;
                  }
                  | UPDATEBANCO IDENTIFIER{
                   if(onRoute == 1 ){
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n\t",$2,idModel);
+                      fprintf(output_controller,"\ndef update_item(%s):\n\t",idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                    fprintf(output_controller,"_ex = %s.query.get(%s)\n",nomeModel,idModel);
@@ -207,11 +208,12 @@ operation_banco :  ADDBANCO IDENTIFIER {
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    update = 1;
                  }
                  | READBANCO IDENTIFIER{
                   if(onRoute == 1 ){
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n",$2,idModel);
+                      fprintf(output_controller,"\ndef read_banco(%s):\n",$2,idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                   fprintf(output_controller,"\t_ex = %s.query.all(%s)",nomeModel,idModel);
@@ -219,14 +221,49 @@ operation_banco :  ADDBANCO IDENTIFIER {
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    read = 1;
                  }
                  ;
 
 // RETORNOS DAS FUNÇÕES DO CONTROLLER
 // BASICAMENTE SE PODE RETORNAR ALGUM TEMPLATE (HTML, JINJA) APÓS A EXECUÇÃO DE ALGUMA FUNÇÃO DO CONTROLLER
 // E E REALIZAR UM REDIRECT, QUE REDIRECIONA A PÁGINA PARA ALGUMA ROTA EM ESPECÍFICO
-return_declaration :  TEMPLATE {fprintf(output_controller,"\n\treturn render_template()\n");}
-                    | REDIRECT {fprintf(output_controller,"\n\treturn redirect(url_for(__))\n");}
+return_declaration :  TEMPLATE {
+                        if(create == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_banco.html')\n");
+                          create = 0;
+                        }else if(read == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_banco.html')\n");
+                          read = 0;
+                        }else if(delete == 1){
+                          fprintf(output_controller,"\n\treturn render_template('index.html')\n");
+                          delete = 0;
+                        }else if(update == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_item.html',_ex=_ex)\n");
+                          delete = 0;
+                        }else{
+                          fprintf(output_controller,"\n\treturn render_template()\n");
+                        }
+                                                  
+                      }
+                    | REDIRECT {
+                        if(create == 1){
+                            fprintf(output_controller,"\n\treturn redirect(url_for(read_banco))\n");
+                            create = 0;
+                        }else if(read == 1){
+                          fprintf(output_controller,"\n\treturn redirect(url_for(read_banco))\n");
+                          read = 0;
+                        }else if(delete == 1){
+                          fprintf(output_controller,"\n\treturn redirect(url_for(index))\n");
+                          delete = 0;
+                        }else if(update = 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_item')\n");
+                          update = 0;
+                        }
+                        else
+                        fprintf(output_controller,"\n\treturn redirect(url_for(__))\n");
+                      };
+                      
 
 arguments : IDENTIFIER{
             if(asController == 1){
@@ -250,7 +287,7 @@ function_declation : FUNC CONTROLLER  arguments{onRoute = 0;}
 ;
 
 // CRIAÇÃO DE ENDPOINTS MAIORES
-other_identifier : { fprintf(output_controller,"");}
+other_identifier : {fprintf(output_controller,"");}
                   | IDENTIFIER {fprintf(output_controller,"/%s",$1);} other_identifier
                    
 ;
@@ -284,6 +321,8 @@ controller_declaration : CRIE CONTROLLER IDENTIFIER{
                           if(asController == 0 && checkImportController == 0){
                             fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
                             fprintf(output_controller,"from output_model import db, %s\n",nomeModel);
+                            fprintf(output_controller,"\n@app.route('/')\ndef index():\n");
+                            fprintf(output_controller,"\treturn render_template('home')\n");
                           }
                             
                           asController = 1;

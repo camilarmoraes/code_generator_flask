@@ -30,3 +30,9 @@ func controller crie updatebanco update_banco retorne template;
 crie rota generica;
 func controller test;
 
+
+# comentário agora no controller
+
+""" comentário em bloco 
+no controller """
+

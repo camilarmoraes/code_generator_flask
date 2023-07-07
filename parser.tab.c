@@ -79,7 +79,7 @@ int routeSpecial = 0; // flag para verificar se a rota criada é uma rota especi
 int checkImportModel = 0; // flag para verificar se já houve importação das bibliotecas para o model
 int checkImportController; // flag para verificar se já houve importação das bibliotecas para o controller
 int nulo = 0; // flag que verifica se o token NULO foi acionado
-
+int create, update, delete, read = 0;
 #define AddVAR(n,t) SymTab=MakeVAR(n, t, SymTab)
 #define ASSERT(x,y) if(!(x)) { printf("%s na  linha %d\n",(y),yylineno); semerro=1; }
 
@@ -487,9 +487,9 @@ static const yytype_uint16 yyrline[] =
        0,    56,    56,    59,    60,    61,    62,    65,    66,    67,
       68,    69,    70,    74,    81,    96,    97,   103,   104,   105,
      110,   111,   115,   116,   120,   136,   137,   140,   140,   154,
-     155,   156,   157,   158,   159,   163,   170,   181,   197,   211,
-     228,   229,   231,   243,   248,   249,   253,   254,   254,   258,
-     258,   269,   269,   283
+     155,   156,   157,   158,   159,   163,   170,   181,   198,   213,
+     231,   249,   268,   280,   285,   286,   290,   291,   291,   295,
+     295,   306,   306,   320
 };
 #endif
 
@@ -1506,14 +1506,14 @@ yyreduce:
 #line 170 "parser.y" /* yacc.c:1646  */
     {
                     if(onRoute == 1 ){
-                      fprintf(output_controller,"\ndef %s():\n\t",(yyvsp[0].ystr));
+                      fprintf(output_controller,"\ndef create():\n\t");
                       fprintf(output_controller,"if request.method=='POST':");
                       fprintf(output_controller,"\n\t\t_ex = %s(request.form['__ex'])",nomeModel);
                       fprintf(output_controller,"\n\t\tdb.session.add(_ex)\n\t\tdb.session.commit()");
                     }else{
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
-                    
+                    create = 1;
                   }
 #line 1519 "parser.tab.c" /* yacc.c:1646  */
     break;
@@ -1525,7 +1525,7 @@ yyreduce:
                     // AS ROTAS ESPECIAIS SÃO AQUELAS QUE NECESSITAM DE ALGUM VALOR CHAVE
                     // PROVENIENTE DO MODEL.
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n\t",(yyvsp[0].ystr),idModel);
+                      fprintf(output_controller,"\ndef delete_banco(%s):\n\t",idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                     fprintf(output_controller,"_ex = %s.query.get(%s)\n",nomeModel,idModel);
@@ -1535,16 +1535,17 @@ yyreduce:
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    delete = 1;
                  }
-#line 1540 "parser.tab.c" /* yacc.c:1646  */
+#line 1541 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 197 "parser.y" /* yacc.c:1646  */
+#line 198 "parser.y" /* yacc.c:1646  */
     {
                   if(onRoute == 1 ){
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n\t",(yyvsp[0].ystr),idModel);
+                      fprintf(output_controller,"\ndef update_item(%s):\n\t",idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                    fprintf(output_controller,"_ex = %s.query.get(%s)\n",nomeModel,idModel);
@@ -1554,16 +1555,17 @@ yyreduce:
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    update = 1;
                  }
-#line 1559 "parser.tab.c" /* yacc.c:1646  */
+#line 1561 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 211 "parser.y" /* yacc.c:1646  */
+#line 213 "parser.y" /* yacc.c:1646  */
     {
                   if(onRoute == 1 ){
                     if(routeSpecial == 1)
-                      fprintf(output_controller,"\ndef %s(%s):\n",(yyvsp[0].ystr),idModel);
+                      fprintf(output_controller,"\ndef read_banco(%s):\n",(yyvsp[0].ystr),idModel);
                     else
                       ASSERT((NULL),"ROTA NÃO DEFINIDA ADEQUADAMENTE");
                   fprintf(output_controller,"\t_ex = %s.query.all(%s)",nomeModel,idModel);
@@ -1571,24 +1573,58 @@ yyreduce:
                       ASSERT((NULL),"ROTA NÃO FOI DEFINIDA");
                     }
                     routeSpecial = 0;
+                    read = 1;
                  }
-#line 1576 "parser.tab.c" /* yacc.c:1646  */
+#line 1579 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 228 "parser.y" /* yacc.c:1646  */
-    {fprintf(output_controller,"\n\treturn render_template()\n");}
-#line 1582 "parser.tab.c" /* yacc.c:1646  */
+#line 231 "parser.y" /* yacc.c:1646  */
+    {
+                        if(create == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_banco.html')\n");
+                          create = 0;
+                        }else if(read == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_banco.html')\n");
+                          read = 0;
+                        }else if(delete == 1){
+                          fprintf(output_controller,"\n\treturn render_template('index.html')\n");
+                          delete = 0;
+                        }else if(update == 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_item.html',_ex=_ex)\n");
+                          delete = 0;
+                        }else{
+                          fprintf(output_controller,"\n\treturn render_template()\n");
+                        }
+                                                  
+                      }
+#line 1602 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 229 "parser.y" /* yacc.c:1646  */
-    {fprintf(output_controller,"\n\treturn redirect(url_for(__))\n");}
-#line 1588 "parser.tab.c" /* yacc.c:1646  */
+#line 249 "parser.y" /* yacc.c:1646  */
+    {
+                        if(create == 1){
+                            fprintf(output_controller,"\n\treturn redirect(url_for(read_banco))\n");
+                            create = 0;
+                        }else if(read == 1){
+                          fprintf(output_controller,"\n\treturn redirect(url_for(read_banco))\n");
+                          read = 0;
+                        }else if(delete == 1){
+                          fprintf(output_controller,"\n\treturn redirect(url_for(index))\n");
+                          delete = 0;
+                        }else if(update = 1){
+                          fprintf(output_controller,"\n\treturn render_template('read_item')\n");
+                          update = 0;
+                        }
+                        else
+                        fprintf(output_controller,"\n\treturn redirect(url_for(__))\n");
+                      }
+#line 1624 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 231 "parser.y" /* yacc.c:1646  */
+#line 268 "parser.y" /* yacc.c:1646  */
     {
             if(asController == 1){
               if(onRoute == 1){
@@ -1601,35 +1637,35 @@ yyreduce:
             }
             
             }
-#line 1605 "parser.tab.c" /* yacc.c:1646  */
+#line 1641 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 248 "parser.y" /* yacc.c:1646  */
+#line 285 "parser.y" /* yacc.c:1646  */
     {onRoute = 0;}
-#line 1611 "parser.tab.c" /* yacc.c:1646  */
+#line 1647 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 249 "parser.y" /* yacc.c:1646  */
+#line 286 "parser.y" /* yacc.c:1646  */
     {fprintf(output_model,"\ndef %s(*args, **kwargs):\n\tpass\n",(yyvsp[0].ystr));}
-#line 1617 "parser.tab.c" /* yacc.c:1646  */
+#line 1653 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 253 "parser.y" /* yacc.c:1646  */
-    { fprintf(output_controller,"");}
-#line 1623 "parser.tab.c" /* yacc.c:1646  */
+#line 290 "parser.y" /* yacc.c:1646  */
+    {fprintf(output_controller,"");}
+#line 1659 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 254 "parser.y" /* yacc.c:1646  */
+#line 291 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"/%s",(yyvsp[0].ystr));}
-#line 1629 "parser.tab.c" /* yacc.c:1646  */
+#line 1665 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 258 "parser.y" /* yacc.c:1646  */
+#line 295 "parser.y" /* yacc.c:1646  */
     {
               onRoute=1;
               routeSpecial = 1;
@@ -1641,17 +1677,17 @@ yyreduce:
               // TAMBÉM É POSSÍVEL REALIZAR A ADIÇÃO NA ROTA, DO IDENTIFICADOR NECESSÁRIO NO 
               // CONTROLLER, PROVENIENTE DO MODEL.
               }
-#line 1645 "parser.tab.c" /* yacc.c:1646  */
+#line 1681 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 268 "parser.y" /* yacc.c:1646  */
+#line 305 "parser.y" /* yacc.c:1646  */
     {fprintf(output_controller,"/<int:%s>')",idModel);}
-#line 1651 "parser.tab.c" /* yacc.c:1646  */
+#line 1687 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 269 "parser.y" /* yacc.c:1646  */
+#line 306 "parser.y" /* yacc.c:1646  */
     {
                 onRoute = 1;
                 routeSpecial = 0;
@@ -1661,21 +1697,23 @@ yyreduce:
                   ASSERT((NULL),"Problema no modelo");
                 }
               }
-#line 1665 "parser.tab.c" /* yacc.c:1646  */
+#line 1701 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 277 "parser.y" /* yacc.c:1646  */
+#line 314 "parser.y" /* yacc.c:1646  */
     { fprintf(output_controller,"')");}
-#line 1671 "parser.tab.c" /* yacc.c:1646  */
+#line 1707 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 283 "parser.y" /* yacc.c:1646  */
+#line 320 "parser.y" /* yacc.c:1646  */
     {
                           if(asController == 0 && checkImportController == 0){
                             fprintf(output_controller,"import flask\nfrom flask import render_template,redirect,url_for,request\n");
                             fprintf(output_controller,"from output_model import db, %s\n",nomeModel);
+                            fprintf(output_controller,"\n@app.route('/')\ndef index():\n");
+                            fprintf(output_controller,"\treturn render_template('home')\n");
                           }
                             
                           asController = 1;
@@ -1683,11 +1721,11 @@ yyreduce:
                           
 
 }
-#line 1687 "parser.tab.c" /* yacc.c:1646  */
+#line 1725 "parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1691 "parser.tab.c" /* yacc.c:1646  */
+#line 1729 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1915,7 +1953,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 295 "parser.y" /* yacc.c:1906  */
+#line 334 "parser.y" /* yacc.c:1906  */
 
 
 main( int argc, char *argv[] )
