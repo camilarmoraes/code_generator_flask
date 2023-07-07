@@ -1,0 +1,11 @@
+crie controller User;
+crie rota home;
+func controller crie addbanco criar_usuario retorne redirecionar;
+crie rota home/asd;
+func controller crie readbanco ler_cliente retorne template;
+crie rota home/asd;
+func controller index;
+crie rota home/asd;
+func controller crie deletebanco delete_usuario retorne redirecionar;
+crie rota home/asd;
+func controller crie updatebanco update_banco retorne template;

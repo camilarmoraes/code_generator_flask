@@ -1,0 +1,32 @@
+#model
+
+crie model Admin;
+crie campo id : Integer, FK=Pessoa.id - PK;
+crie campo nome : String,FK=Pessoa.id - PK, nulo;
+crie campo dataNascimento : Datetime, nulo;
+crie campo idade : Integer, FK=Admin.id, nulo;
+crie campo areaAtuacao: Text, nulo * unico;
+crie campo areaAtuacao: Text, nulo, PK * unico;
+crie relacao endereco : Endereco;
+
+"""este e um comentário em bloco
+no caso ele esta sendo escrito no model"""
+
+func model __init__;
+func model outra_funcao;
+
+crie controller User;
+crie rota home;
+func controller crie addbanco criar_usuario retorne redirecionar;
+crie rota special home asd;
+func controller crie readbanco ler_cliente retorne template;
+crie rota home pagina1 pagina2;
+func controller index;
+crie rota special delete banco_banco;
+func controller crie deletebanco delete_usuario retorne redirecionar;
+crie rota special atualiza credito;
+func controller crie updatebanco update_banco retorne template;
+
+crie rota generica;
+func controller test;
+

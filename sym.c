@@ -77,7 +77,7 @@ char *stringpool(char *s) {
 }
 
 
-/* Fnção para printar dados */
+// função para imprimir os valores que estão na tabela de símbolos
 void imprimi()
 {
     VAR *p = SymTab;

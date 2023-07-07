@@ -4,9 +4,9 @@ char *stringpools(char *);
 %}
 %option yylineno
 
-DIGIT    [0-9]
+DIGIT    [0-9] 
 ID       [_a-zA-Z][_A-Za-z0-9]*
-CI       [A-Za-z0-9_ \n]*
+CI       [À-Úà-ùA-Za-z0-9_ \n]*
 %%
 
 {DIGIT}+      {      yylval.yint = atoi(yytext);  return(NUMINT); }
@@ -28,6 +28,7 @@ Datetime      {      return(DATE);}
 Time          {      return(TIME);}
 Text          {      return(TEXT);}
 
+unico         {      return(UNIQUE);}
 rota          {      return(ROUTE);}
 func          {      return(FUNC);}
 retorne       {      return(RETURN);}

@@ -67,14 +67,15 @@ extern int yydebug;
     FUNC = 277,
     RETURN = 278,
     SPECIAL = 279,
-    PK = 280,
-    FK = 281,
-    REDIRECT = 282,
-    TEMPLATE = 283,
-    ADDBANCO = 284,
-    DELETEBANCO = 285,
-    UPDATEBANCO = 286,
-    READBANCO = 287
+    UNIQUE = 280,
+    PK = 281,
+    FK = 282,
+    REDIRECT = 283,
+    TEMPLATE = 284,
+    ADDBANCO = 285,
+    DELETEBANCO = 286,
+    UPDATEBANCO = 287,
+    READBANCO = 288
   };
 #endif
 
@@ -83,13 +84,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 19 "parser.y" /* yacc.c:1909  */
+#line 28 "parser.y" /* yacc.c:1909  */
 
 	char * ystr;
 	int   yint;
 	
 
-#line 93 "parser.tab.h" /* yacc.c:1909  */
+#line 94 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

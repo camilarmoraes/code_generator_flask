@@ -1,0 +1,23 @@
+#model
+
+crie model User;
+crie campo id : Integer, PK, nulo;
+crie campo nome : String;
+crie campo dataNascimento : Datetime, nulo;
+crie campo idade : Integer, FK=Admin.id, nulo;
+crie relacao endereco : Endereco;
+
+"""este e um comentário em bloco
+no caso ele esta sendo escrito no model"""
+
+crie model Admin;
+crie campo id : Integer, FK=Pessoa.id - PK;
+crie campo nome : String,FK=Pessoa.id - PK, nulo;
+crie campo dataNascimento : Datetime, nulo;
+crie campo idade : Integer, FK=Admin.id, nulo;
+crie campo areaAtuacao: Text, nulo;
+crie campo areaAtuacao: Text, nulo, PK;
+crie relacao endereco : Endereco;
+
+func model __init__;
+func model outra_funcao;

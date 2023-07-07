@@ -5,7 +5,7 @@ Terminals unused in grammar
    TIME
 
 
-State 62 conflicts: 1 shift/reduce, 2 reduce/reduce
+State 62 conflicts: 1 shift/reduce, 3 reduce/reduce
 
 
 Grammar
@@ -43,140 +43,147 @@ Grammar
 
    23 model_declaration: CRIE MODEL IDENTIFIER
 
-   24 $@1: %empty
+   24 unico: %empty
+   25      | '*' UNIQUE
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 specciais
+   26 $@1: %empty
 
-   26 type_specifier: STRING
-   27               | INTEGER
-   28               | FLOAT
-   29               | DATE
-   30               | BOOL
-   31               | TEXT
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 specciais unico
 
-   32 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER
+   28 type_specifier: STRING
+   29               | INTEGER
+   30               | FLOAT
+   31               | DATE
+   32               | BOOL
+   33               | TEXT
 
-   33 operation_banco: ADDBANCO IDENTIFIER
-   34                | DELETEBANCO IDENTIFIER
-   35                | UPDATEBANCO IDENTIFIER
-   36                | READBANCO IDENTIFIER
+   34 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER
 
-   37 return_declaration: TEMPLATE
-   38                   | REDIRECT
+   35 operation_banco: ADDBANCO IDENTIFIER
+   36                | DELETEBANCO IDENTIFIER
+   37                | UPDATEBANCO IDENTIFIER
+   38                | READBANCO IDENTIFIER
 
-   39 arguments: IDENTIFIER
-   40          | CRIE operation_banco RETURN return_declaration
+   39 return_declaration: TEMPLATE
+   40                   | REDIRECT
 
-   41 function_declation: FUNC CONTROLLER arguments
-   42                   | FUNC MODEL IDENTIFIER
+   41 arguments: IDENTIFIER
+   42          | CRIE operation_banco RETURN return_declaration
 
-   43 other_identifier: %empty
+   43 function_declation: FUNC CONTROLLER arguments
+   44                   | FUNC MODEL IDENTIFIER
 
-   44 $@2: %empty
+   45 other_identifier: %empty
 
-   45 other_identifier: IDENTIFIER $@2 other_identifier
+   46 $@2: %empty
 
-   46 $@3: %empty
+   47 other_identifier: IDENTIFIER $@2 other_identifier
 
-   47 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 other_identifier
+   48 $@3: %empty
 
-   48 $@4: %empty
+   49 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 other_identifier
 
-   49 route_declation: CRIE ROUTE IDENTIFIER $@4 other_identifier
+   50 $@4: %empty
 
-   50 controller_declaration: CRIE CONTROLLER IDENTIFIER
+   51 route_declation: CRIE ROUTE IDENTIFIER $@4 other_identifier
+
+   52 controller_declaration: CRIE CONTROLLER IDENTIFIER
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
+'*' (42) 25
 ',' (44) 15 16 17 18 20
 '-' (45) 17 18
 '.' (46) 15 17 18
-':' (58) 25 32
+':' (58) 27 34
 ';' (59) 2 3
 '=' (61) 15 17 18
 error (256)
-CRIE (258) 23 25 32 40 47 49 50
-MODEL (259) 23 42
-CONTROLLER (260) 41 50
+CRIE (258) 23 27 34 42 49 51 52
+MODEL (259) 23 44
+CONTROLLER (260) 43 52
 VIEW (261)
-CAMPO (262) 25
-RELACAO (263) 32
+CAMPO (262) 27
+RELACAO (263) 34
 NUMINT (264)
-IDENTIFIER (265) 15 17 18 23 25 32 33 34 35 36 39 42 45 47 49 50
+IDENTIFIER (265) 15 17 18 23 27 34 35 36 37 38 41 44 47 49 51 52
 COMENTARIO (266) 12
 NULO (267) 20
 COMMENT_BLOCK (268) 13
-INTEGER (269) 27
-STRING (270) 26
-FLOAT (271) 28
-DATE (272) 29
+INTEGER (269) 29
+STRING (270) 28
+FLOAT (271) 30
+DATE (272) 31
 TIME (273)
-BOOL (274) 30
-TEXT (275) 31
-ROUTE (276) 47 49
-FUNC (277) 41 42
-RETURN (278) 40
-SPECIAL (279) 47
-PK (280) 16 17 18
-FK (281) 15 17 18
-REDIRECT (282) 38
-TEMPLATE (283) 37
-ADDBANCO (284) 33
-DELETEBANCO (285) 34
-UPDATEBANCO (286) 35
-READBANCO (287) 36
+BOOL (274) 32
+TEXT (275) 33
+ROUTE (276) 49 51
+FUNC (277) 43 44
+RETURN (278) 42
+SPECIAL (279) 49
+UNIQUE (280) 25
+PK (281) 16 17 18
+FK (282) 15 17 18
+REDIRECT (283) 40
+TEMPLATE (284) 39
+ADDBANCO (285) 35
+DELETEBANCO (286) 36
+UPDATEBANCO (287) 37
+READBANCO (288) 38
 
 
 Nonterminals, with rules where they appear
 
-$accept (39)
+$accept (41)
     on left: 0
-program (40)
+program (42)
     on left: 1, on right: 0
-statements (41)
+statements (43)
     on left: 2 3 4 5, on right: 1 3 4
-statement (42)
+statement (44)
     on left: 6 7 8 9 10 11, on right: 2 3
-comentario_declaration (43)
+comentario_declaration (45)
     on left: 12 13, on right: 4 5
-key (44)
+key (46)
     on left: 14 15 16 17 18, on right: 21 22
-null (45)
+null (47)
     on left: 19 20, on right: 21 22
-specciais (46)
-    on left: 21 22, on right: 25
-model_declaration (47)
+specciais (48)
+    on left: 21 22, on right: 27
+model_declaration (49)
     on left: 23, on right: 6
-field_declaration (48)
-    on left: 25, on right: 8
-$@1 (49)
-    on left: 24, on right: 25
-type_specifier (50)
-    on left: 26 27 28 29 30 31, on right: 25
-relation_declaration (51)
-    on left: 32, on right: 11
-operation_banco (52)
-    on left: 33 34 35 36, on right: 40
-return_declaration (53)
-    on left: 37 38, on right: 40
-arguments (54)
-    on left: 39 40, on right: 41
-function_declation (55)
-    on left: 41 42, on right: 10
-other_identifier (56)
-    on left: 43 45, on right: 45 47 49
-$@2 (57)
-    on left: 44, on right: 45
-route_declation (58)
-    on left: 47 49, on right: 9
-$@3 (59)
+unico (50)
+    on left: 24 25, on right: 27
+field_declaration (51)
+    on left: 27, on right: 8
+$@1 (52)
+    on left: 26, on right: 27
+type_specifier (53)
+    on left: 28 29 30 31 32 33, on right: 27
+relation_declaration (54)
+    on left: 34, on right: 11
+operation_banco (55)
+    on left: 35 36 37 38, on right: 42
+return_declaration (56)
+    on left: 39 40, on right: 42
+arguments (57)
+    on left: 41 42, on right: 43
+function_declation (58)
+    on left: 43 44, on right: 10
+other_identifier (59)
+    on left: 45 47, on right: 47 49 51
+$@2 (60)
     on left: 46, on right: 47
-$@4 (60)
+route_declation (61)
+    on left: 49 51, on right: 9
+$@3 (62)
     on left: 48, on right: 49
-controller_declaration (61)
-    on left: 50, on right: 7
+$@4 (63)
+    on left: 50, on right: 51
+controller_declaration (64)
+    on left: 52, on right: 7
 
 
 State 0
@@ -203,11 +210,11 @@ State 0
 State 1
 
    23 model_declaration: CRIE . MODEL IDENTIFIER
-   25 field_declaration: CRIE . CAMPO IDENTIFIER ':' type_specifier $@1 specciais
-   32 relation_declaration: CRIE . RELACAO IDENTIFIER ':' IDENTIFIER
-   47 route_declation: CRIE . ROUTE SPECIAL IDENTIFIER $@3 other_identifier
-   49                | CRIE . ROUTE IDENTIFIER $@4 other_identifier
-   50 controller_declaration: CRIE . CONTROLLER IDENTIFIER
+   27 field_declaration: CRIE . CAMPO IDENTIFIER ':' type_specifier $@1 specciais unico
+   34 relation_declaration: CRIE . RELACAO IDENTIFIER ':' IDENTIFIER
+   49 route_declation: CRIE . ROUTE SPECIAL IDENTIFIER $@3 other_identifier
+   51                | CRIE . ROUTE IDENTIFIER $@4 other_identifier
+   52 controller_declaration: CRIE . CONTROLLER IDENTIFIER
 
     MODEL       shift, and go to state 15
     CONTROLLER  shift, and go to state 16
@@ -232,8 +239,8 @@ State 3
 
 State 4
 
-   41 function_declation: FUNC . CONTROLLER arguments
-   42                   | FUNC . MODEL IDENTIFIER
+   43 function_declation: FUNC . CONTROLLER arguments
+   44                   | FUNC . MODEL IDENTIFIER
 
     MODEL       shift, and go to state 20
     CONTROLLER  shift, and go to state 21
@@ -334,29 +341,29 @@ State 15
 
 State 16
 
-   50 controller_declaration: CRIE CONTROLLER . IDENTIFIER
+   52 controller_declaration: CRIE CONTROLLER . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 27
 
 
 State 17
 
-   25 field_declaration: CRIE CAMPO . IDENTIFIER ':' type_specifier $@1 specciais
+   27 field_declaration: CRIE CAMPO . IDENTIFIER ':' type_specifier $@1 specciais unico
 
     IDENTIFIER  shift, and go to state 28
 
 
 State 18
 
-   32 relation_declaration: CRIE RELACAO . IDENTIFIER ':' IDENTIFIER
+   34 relation_declaration: CRIE RELACAO . IDENTIFIER ':' IDENTIFIER
 
     IDENTIFIER  shift, and go to state 29
 
 
 State 19
 
-   47 route_declation: CRIE ROUTE . SPECIAL IDENTIFIER $@3 other_identifier
-   49                | CRIE ROUTE . IDENTIFIER $@4 other_identifier
+   49 route_declation: CRIE ROUTE . SPECIAL IDENTIFIER $@3 other_identifier
+   51                | CRIE ROUTE . IDENTIFIER $@4 other_identifier
 
     IDENTIFIER  shift, and go to state 30
     SPECIAL     shift, and go to state 31
@@ -364,14 +371,14 @@ State 19
 
 State 20
 
-   42 function_declation: FUNC MODEL . IDENTIFIER
+   44 function_declation: FUNC MODEL . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 32
 
 
 State 21
 
-   41 function_declation: FUNC CONTROLLER . arguments
+   43 function_declation: FUNC CONTROLLER . arguments
 
     CRIE        shift, and go to state 33
     IDENTIFIER  shift, and go to state 34
@@ -416,51 +423,51 @@ State 26
 
 State 27
 
-   50 controller_declaration: CRIE CONTROLLER IDENTIFIER .
+   52 controller_declaration: CRIE CONTROLLER IDENTIFIER .
 
-    $default  reduce using rule 50 (controller_declaration)
+    $default  reduce using rule 52 (controller_declaration)
 
 
 State 28
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER . ':' type_specifier $@1 specciais
+   27 field_declaration: CRIE CAMPO IDENTIFIER . ':' type_specifier $@1 specciais unico
 
     ':'  shift, and go to state 37
 
 
 State 29
 
-   32 relation_declaration: CRIE RELACAO IDENTIFIER . ':' IDENTIFIER
+   34 relation_declaration: CRIE RELACAO IDENTIFIER . ':' IDENTIFIER
 
     ':'  shift, and go to state 38
 
 
 State 30
 
-   49 route_declation: CRIE ROUTE IDENTIFIER . $@4 other_identifier
+   51 route_declation: CRIE ROUTE IDENTIFIER . $@4 other_identifier
 
-    $default  reduce using rule 48 ($@4)
+    $default  reduce using rule 50 ($@4)
 
     $@4  go to state 39
 
 
 State 31
 
-   47 route_declation: CRIE ROUTE SPECIAL . IDENTIFIER $@3 other_identifier
+   49 route_declation: CRIE ROUTE SPECIAL . IDENTIFIER $@3 other_identifier
 
     IDENTIFIER  shift, and go to state 40
 
 
 State 32
 
-   42 function_declation: FUNC MODEL IDENTIFIER .
+   44 function_declation: FUNC MODEL IDENTIFIER .
 
-    $default  reduce using rule 42 (function_declation)
+    $default  reduce using rule 44 (function_declation)
 
 
 State 33
 
-   40 arguments: CRIE . operation_banco RETURN return_declaration
+   42 arguments: CRIE . operation_banco RETURN return_declaration
 
     ADDBANCO     shift, and go to state 41
     DELETEBANCO  shift, and go to state 42
@@ -472,16 +479,16 @@ State 33
 
 State 34
 
-   39 arguments: IDENTIFIER .
+   41 arguments: IDENTIFIER .
 
-    $default  reduce using rule 39 (arguments)
+    $default  reduce using rule 41 (arguments)
 
 
 State 35
 
-   41 function_declation: FUNC CONTROLLER arguments .
+   43 function_declation: FUNC CONTROLLER arguments .
 
-    $default  reduce using rule 41 (function_declation)
+    $default  reduce using rule 43 (function_declation)
 
 
 State 36
@@ -493,7 +500,7 @@ State 36
 
 State 37
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER ':' . type_specifier $@1 specciais
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' . type_specifier $@1 specciais unico
 
     INTEGER  shift, and go to state 46
     STRING   shift, and go to state 47
@@ -507,182 +514,182 @@ State 37
 
 State 38
 
-   32 relation_declaration: CRIE RELACAO IDENTIFIER ':' . IDENTIFIER
+   34 relation_declaration: CRIE RELACAO IDENTIFIER ':' . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 53
 
 
 State 39
 
-   49 route_declation: CRIE ROUTE IDENTIFIER $@4 . other_identifier
+   51 route_declation: CRIE ROUTE IDENTIFIER $@4 . other_identifier
 
     IDENTIFIER  shift, and go to state 54
 
-    $default  reduce using rule 43 (other_identifier)
+    $default  reduce using rule 45 (other_identifier)
 
     other_identifier  go to state 55
 
 
 State 40
 
-   47 route_declation: CRIE ROUTE SPECIAL IDENTIFIER . $@3 other_identifier
+   49 route_declation: CRIE ROUTE SPECIAL IDENTIFIER . $@3 other_identifier
 
-    $default  reduce using rule 46 ($@3)
+    $default  reduce using rule 48 ($@3)
 
     $@3  go to state 56
 
 
 State 41
 
-   33 operation_banco: ADDBANCO . IDENTIFIER
+   35 operation_banco: ADDBANCO . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 57
 
 
 State 42
 
-   34 operation_banco: DELETEBANCO . IDENTIFIER
+   36 operation_banco: DELETEBANCO . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 58
 
 
 State 43
 
-   35 operation_banco: UPDATEBANCO . IDENTIFIER
+   37 operation_banco: UPDATEBANCO . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 59
 
 
 State 44
 
-   36 operation_banco: READBANCO . IDENTIFIER
+   38 operation_banco: READBANCO . IDENTIFIER
 
     IDENTIFIER  shift, and go to state 60
 
 
 State 45
 
-   40 arguments: CRIE operation_banco . RETURN return_declaration
+   42 arguments: CRIE operation_banco . RETURN return_declaration
 
     RETURN  shift, and go to state 61
 
 
 State 46
 
-   27 type_specifier: INTEGER .
-
-    $default  reduce using rule 27 (type_specifier)
-
-
-State 47
-
-   26 type_specifier: STRING .
-
-    $default  reduce using rule 26 (type_specifier)
-
-
-State 48
-
-   28 type_specifier: FLOAT .
-
-    $default  reduce using rule 28 (type_specifier)
-
-
-State 49
-
-   29 type_specifier: DATE .
+   29 type_specifier: INTEGER .
 
     $default  reduce using rule 29 (type_specifier)
 
 
-State 50
+State 47
 
-   30 type_specifier: BOOL .
+   28 type_specifier: STRING .
+
+    $default  reduce using rule 28 (type_specifier)
+
+
+State 48
+
+   30 type_specifier: FLOAT .
 
     $default  reduce using rule 30 (type_specifier)
 
 
-State 51
+State 49
 
-   31 type_specifier: TEXT .
+   31 type_specifier: DATE .
 
     $default  reduce using rule 31 (type_specifier)
 
 
+State 50
+
+   32 type_specifier: BOOL .
+
+    $default  reduce using rule 32 (type_specifier)
+
+
+State 51
+
+   33 type_specifier: TEXT .
+
+    $default  reduce using rule 33 (type_specifier)
+
+
 State 52
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier . $@1 specciais
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier . $@1 specciais unico
 
-    $default  reduce using rule 24 ($@1)
+    $default  reduce using rule 26 ($@1)
 
     $@1  go to state 62
 
 
 State 53
 
-   32 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER .
+   34 relation_declaration: CRIE RELACAO IDENTIFIER ':' IDENTIFIER .
 
-    $default  reduce using rule 32 (relation_declaration)
+    $default  reduce using rule 34 (relation_declaration)
 
 
 State 54
 
-   45 other_identifier: IDENTIFIER . $@2 other_identifier
+   47 other_identifier: IDENTIFIER . $@2 other_identifier
 
-    $default  reduce using rule 44 ($@2)
+    $default  reduce using rule 46 ($@2)
 
     $@2  go to state 63
 
 
 State 55
 
-   49 route_declation: CRIE ROUTE IDENTIFIER $@4 other_identifier .
+   51 route_declation: CRIE ROUTE IDENTIFIER $@4 other_identifier .
 
-    $default  reduce using rule 49 (route_declation)
+    $default  reduce using rule 51 (route_declation)
 
 
 State 56
 
-   47 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 . other_identifier
+   49 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 . other_identifier
 
     IDENTIFIER  shift, and go to state 54
 
-    $default  reduce using rule 43 (other_identifier)
+    $default  reduce using rule 45 (other_identifier)
 
     other_identifier  go to state 64
 
 
 State 57
 
-   33 operation_banco: ADDBANCO IDENTIFIER .
-
-    $default  reduce using rule 33 (operation_banco)
-
-
-State 58
-
-   34 operation_banco: DELETEBANCO IDENTIFIER .
-
-    $default  reduce using rule 34 (operation_banco)
-
-
-State 59
-
-   35 operation_banco: UPDATEBANCO IDENTIFIER .
+   35 operation_banco: ADDBANCO IDENTIFIER .
 
     $default  reduce using rule 35 (operation_banco)
 
 
-State 60
+State 58
 
-   36 operation_banco: READBANCO IDENTIFIER .
+   36 operation_banco: DELETEBANCO IDENTIFIER .
 
     $default  reduce using rule 36 (operation_banco)
 
 
+State 59
+
+   37 operation_banco: UPDATEBANCO IDENTIFIER .
+
+    $default  reduce using rule 37 (operation_banco)
+
+
+State 60
+
+   38 operation_banco: READBANCO IDENTIFIER .
+
+    $default  reduce using rule 38 (operation_banco)
+
+
 State 61
 
-   40 arguments: CRIE operation_banco RETURN . return_declaration
+   42 arguments: CRIE operation_banco RETURN . return_declaration
 
     REDIRECT  shift, and go to state 65
     TEMPLATE  shift, and go to state 66
@@ -692,7 +699,7 @@ State 61
 
 State 62
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 . specciais
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 . specciais unico
 
     ','  shift, and go to state 68
 
@@ -700,6 +707,8 @@ State 62
     ';'       [reduce using rule 19 (null)]
     ','       [reduce using rule 14 (key)]
     ','       [reduce using rule 19 (null)]
+    '*'       reduce using rule 14 (key)
+    '*'       [reduce using rule 19 (null)]
     $default  reduce using rule 14 (key)
 
     key        go to state 69
@@ -709,41 +718,41 @@ State 62
 
 State 63
 
-   45 other_identifier: IDENTIFIER $@2 . other_identifier
+   47 other_identifier: IDENTIFIER $@2 . other_identifier
 
     IDENTIFIER  shift, and go to state 54
 
-    $default  reduce using rule 43 (other_identifier)
+    $default  reduce using rule 45 (other_identifier)
 
     other_identifier  go to state 72
 
 
 State 64
 
-   47 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 other_identifier .
+   49 route_declation: CRIE ROUTE SPECIAL IDENTIFIER $@3 other_identifier .
 
-    $default  reduce using rule 47 (route_declation)
+    $default  reduce using rule 49 (route_declation)
 
 
 State 65
 
-   38 return_declaration: REDIRECT .
+   40 return_declaration: REDIRECT .
 
-    $default  reduce using rule 38 (return_declaration)
+    $default  reduce using rule 40 (return_declaration)
 
 
 State 66
 
-   37 return_declaration: TEMPLATE .
+   39 return_declaration: TEMPLATE .
 
-    $default  reduce using rule 37 (return_declaration)
+    $default  reduce using rule 39 (return_declaration)
 
 
 State 67
 
-   40 arguments: CRIE operation_banco RETURN return_declaration .
+   42 arguments: CRIE operation_banco RETURN return_declaration .
 
-    $default  reduce using rule 40 (arguments)
+    $default  reduce using rule 42 (arguments)
 
 
 State 68
@@ -783,16 +792,20 @@ State 70
 
 State 71
 
-   25 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 specciais .
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 specciais . unico
 
-    $default  reduce using rule 25 (field_declaration)
+    '*'  shift, and go to state 80
+
+    $default  reduce using rule 24 (unico)
+
+    unico  go to state 81
 
 
 State 72
 
-   45 other_identifier: IDENTIFIER $@2 other_identifier .
+   47 other_identifier: IDENTIFIER $@2 other_identifier .
 
-    $default  reduce using rule 45 (other_identifier)
+    $default  reduce using rule 47 (other_identifier)
 
 
 State 73
@@ -807,7 +820,7 @@ State 74
    16 key: ',' PK .
    18    | ',' PK . '-' FK '=' IDENTIFIER '.' IDENTIFIER
 
-    '-'  shift, and go to state 80
+    '-'  shift, and go to state 82
 
     $default  reduce using rule 16 (key)
 
@@ -817,7 +830,7 @@ State 75
    15 key: ',' FK . '=' IDENTIFIER '.' IDENTIFIER
    17    | ',' FK . '=' IDENTIFIER '.' IDENTIFIER '-' PK
 
-    '='  shift, and go to state 81
+    '='  shift, and go to state 83
 
 
 State 76
@@ -854,88 +867,109 @@ State 79
 
 State 80
 
-   18 key: ',' PK '-' . FK '=' IDENTIFIER '.' IDENTIFIER
+   25 unico: '*' . UNIQUE
 
-    FK  shift, and go to state 82
+    UNIQUE  shift, and go to state 84
 
 
 State 81
 
-   15 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER
-   17    | ',' FK '=' . IDENTIFIER '.' IDENTIFIER '-' PK
+   27 field_declaration: CRIE CAMPO IDENTIFIER ':' type_specifier $@1 specciais unico .
 
-    IDENTIFIER  shift, and go to state 83
+    $default  reduce using rule 27 (field_declaration)
 
 
 State 82
 
-   18 key: ',' PK '-' FK . '=' IDENTIFIER '.' IDENTIFIER
+   18 key: ',' PK '-' . FK '=' IDENTIFIER '.' IDENTIFIER
 
-    '='  shift, and go to state 84
+    FK  shift, and go to state 85
 
 
 State 83
 
-   15 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER
-   17    | ',' FK '=' IDENTIFIER . '.' IDENTIFIER '-' PK
-
-    '.'  shift, and go to state 85
-
-
-State 84
-
-   18 key: ',' PK '-' FK '=' . IDENTIFIER '.' IDENTIFIER
+   15 key: ',' FK '=' . IDENTIFIER '.' IDENTIFIER
+   17    | ',' FK '=' . IDENTIFIER '.' IDENTIFIER '-' PK
 
     IDENTIFIER  shift, and go to state 86
 
 
+State 84
+
+   25 unico: '*' UNIQUE .
+
+    $default  reduce using rule 25 (unico)
+
+
 State 85
 
-   15 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER
-   17    | ',' FK '=' IDENTIFIER '.' . IDENTIFIER '-' PK
+   18 key: ',' PK '-' FK . '=' IDENTIFIER '.' IDENTIFIER
 
-    IDENTIFIER  shift, and go to state 87
+    '='  shift, and go to state 87
 
 
 State 86
 
-   18 key: ',' PK '-' FK '=' IDENTIFIER . '.' IDENTIFIER
+   15 key: ',' FK '=' IDENTIFIER . '.' IDENTIFIER
+   17    | ',' FK '=' IDENTIFIER . '.' IDENTIFIER '-' PK
 
     '.'  shift, and go to state 88
 
 
 State 87
 
-   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER .
-   17    | ',' FK '=' IDENTIFIER '.' IDENTIFIER . '-' PK
+   18 key: ',' PK '-' FK '=' . IDENTIFIER '.' IDENTIFIER
 
-    '-'  shift, and go to state 89
-
-    $default  reduce using rule 15 (key)
+    IDENTIFIER  shift, and go to state 89
 
 
 State 88
 
-   18 key: ',' PK '-' FK '=' IDENTIFIER '.' . IDENTIFIER
+   15 key: ',' FK '=' IDENTIFIER '.' . IDENTIFIER
+   17    | ',' FK '=' IDENTIFIER '.' . IDENTIFIER '-' PK
 
     IDENTIFIER  shift, and go to state 90
 
 
 State 89
 
-   17 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' . PK
+   18 key: ',' PK '-' FK '=' IDENTIFIER . '.' IDENTIFIER
 
-    PK  shift, and go to state 91
+    '.'  shift, and go to state 91
 
 
 State 90
+
+   15 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER .
+   17    | ',' FK '=' IDENTIFIER '.' IDENTIFIER . '-' PK
+
+    '-'  shift, and go to state 92
+
+    $default  reduce using rule 15 (key)
+
+
+State 91
+
+   18 key: ',' PK '-' FK '=' IDENTIFIER '.' . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 93
+
+
+State 92
+
+   17 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' . PK
+
+    PK  shift, and go to state 94
+
+
+State 93
 
    18 key: ',' PK '-' FK '=' IDENTIFIER '.' IDENTIFIER .
 
     $default  reduce using rule 18 (key)
 
 
-State 91
+State 94
 
    17 key: ',' FK '=' IDENTIFIER '.' IDENTIFIER '-' PK .
 
