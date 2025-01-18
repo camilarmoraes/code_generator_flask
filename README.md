@@ -8,4 +8,4 @@ Seguindo as seguintes etapas:
 4. Implementação do gerador de código. Após as ações semânticas.
 
 
-## docker run  -it  -v "$PWD":/usr/src  phdcoder/flexbison -> windows( "%cd%" )
+```docker run  -it  -v "$PWD":/usr/src  phdcoder/flexbison -> windows( "%cd%" )```
